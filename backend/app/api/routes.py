@@ -326,37 +326,50 @@ def get_overview(
         else {}
     )
 
-    # The national trend chart follows the filter when one is applied, so the
-    # chart and the KPIs describe the same population.
-    if applied:
-        trend = _filtered_trend(filtered)
-    else:
-        trend = _history_points(repo.load_national_trend())
+    # The trend chart follows the filter when one is applied, so the chart and
+    # the KPIs describe the same population. Very broad selections fall back to
+    # the national series, and the scope is returned so the UI can say which.
+    trend, trend_scope = (
+        _filtered_trend(filtered) if applied
+        else (_history_points(repo.load_national_trend()), "national")
+    )
 
     return OverviewResponse(
         kpis=kpis,
         attention=attention,
         matrix=matrix,
         national_trend=trend,
+        trend_scope=trend_scope,
         band_counts={str(k): int(v) for k, v in band_counts.items()},
         provenance=_provenance(),
         filters_applied=applied,
     )
 
 
-def _filtered_trend(filtered: pd.DataFrame) -> list[TimeseriesPoint]:
-    """Aggregate monthly history for the currently filtered services."""
+def _filtered_trend(
+    filtered: pd.DataFrame,
+) -> tuple[list[TimeseriesPoint], str]:
+    """Aggregate monthly history for the currently filtered services.
+
+    Returns the points *and the scope actually used*, so the caller never
+    presents the national series as though it were the filtered one.
+    """
     pairs = list(
-        zip(filtered["provider_code"].tolist(), filtered["specialty_code"].tolist(), strict=False)
+        zip(
+            filtered["provider_code"].tolist(),
+            filtered["specialty_code"].tolist(),
+            strict=True,
+        )
     )
     if not pairs or len(pairs) > 600:
-        # Too many series to assemble cheaply; fall back to the national view.
-        return _history_points(repo.load_national_trend())
+        # Too many series to assemble cheaply; fall back to the national view
+        # and say so.
+        return _history_points(repo.load_national_trend()), "national"
 
     frames = [repo.load_service_history(p, s) for p, s in pairs]
     frames = [f for f in frames if not f.empty]
     if not frames:
-        return []
+        return [], "filtered"
     stacked = pd.concat(frames, ignore_index=True)
     grouped = (
         stacked.groupby("month_key", as_index=False)
@@ -378,7 +391,7 @@ def _filtered_trend(filtered: pd.DataFrame) -> list[TimeseriesPoint]:
         grouped["over_52_weeks"] / grouped["total_incomplete_pathways"] * 100.0,
         np.nan,
     )
-    return _history_points(grouped)
+    return _history_points(grouped), "filtered"
 
 
 # --- Rankings ---------------------------------------------------------------

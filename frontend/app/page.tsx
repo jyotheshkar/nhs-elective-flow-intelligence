@@ -205,9 +205,11 @@ export default function ControlRoomPage() {
                     Waiting list trend
                   </h2>
                   <p className="card-subtitle">
-                    {Object.keys(overview.filters_applied).length > 0
+                    {overview.trend_scope === "filtered"
                       ? "Aggregated across the filtered selection"
-                      : "All loaded providers and specialties"}
+                      : Object.keys(overview.filters_applied).length > 0
+                        ? "All loaded providers and specialties — the selection is too broad to aggregate as a series"
+                        : "All loaded providers and specialties"}
                   </p>
                 </div>
               </div>

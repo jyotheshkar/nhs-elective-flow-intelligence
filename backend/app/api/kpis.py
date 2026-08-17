@@ -108,27 +108,48 @@ def build_kpis(
     )
 
     pct_within = (within / waiting * 100.0) if waiting else None
-    # Weighted change: recompute the previous month's percentage from summed
-    # counts rather than averaging per-service percentage changes.
+
+    # Weighted month-on-month change, recomputed from summed counts rather than
+    # averaging per-service percentages.
+    #
+    # Both sides are restricted to services that actually reported a previous
+    # month. Including a new service's current list in the denominator while it
+    # contributes nothing to the numerator would understate the prior position
+    # and overstate the improvement.
     previous_pct = None
-    if {"within_18_weeks", "pct_within_18_weeks_prev"} <= set(snapshot.columns):
-        previous_within = _finite(
-            (
-                snapshot["pct_within_18_weeks_prev"]
-                / 100.0
-                * (
-                    snapshot["total_incomplete_pathways"]
-                    - snapshot["backlog_change_1m"].fillna(0)
+    pct_change = None
+    required = {
+        "within_18_weeks", "pct_within_18_weeks_prev",
+        "total_incomplete_pathways", "backlog_change_1m",
+    }
+    if required <= set(snapshot.columns):
+        comparable = snapshot[
+            snapshot["pct_within_18_weeks_prev"].notna()
+            & snapshot["backlog_change_1m"].notna()
+        ]
+        if not comparable.empty:
+            previous_total = (
+                comparable["total_incomplete_pathways"]
+                - comparable["backlog_change_1m"]
+            )
+            previous_within_sum = _finite(
+                (comparable["pct_within_18_weeks_prev"] / 100.0 * previous_total).sum()
+            )
+            previous_total_sum = _finite(previous_total.sum())
+            current_within_sum = _finite(comparable["within_18_weeks"].sum())
+            current_total_sum = _finite(comparable["total_incomplete_pathways"].sum())
+
+            if (
+                previous_within_sum is not None
+                and previous_total_sum
+                and current_within_sum is not None
+                and current_total_sum
+            ):
+                previous_pct = previous_within_sum / previous_total_sum * 100.0
+                current_pct_comparable = (
+                    current_within_sum / current_total_sum * 100.0
                 )
-            ).sum()
-        )
-        if previous_within is not None and previous_waiting:
-            previous_pct = previous_within / previous_waiting * 100.0
-    pct_change = (
-        pct_within - previous_pct
-        if pct_within is not None and previous_pct is not None
-        else None
-    )
+                pct_change = current_pct_comparable - previous_pct
 
     cards.append(
         KpiCard(

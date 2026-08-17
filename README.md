@@ -71,6 +71,11 @@ workbooks, builds a reproducible analytical warehouse, and produces:
 
 ## Key features
 
+> Screenshots are not committed, because they would pin a specific data vintage and go
+> stale with each monthly publication. `make demo && make dev` gives you the full
+> interface in about a minute — see
+> [docs/screenshots](docs/screenshots/README.md) for a capture guide.
+
 ### Elective Flow Control Room
 Executive KPI row (each with its definition, source and calculation attached), a
 priority matrix plotting growth against long-wait burden, an auto-generated

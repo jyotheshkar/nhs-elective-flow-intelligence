@@ -197,6 +197,8 @@ export interface OverviewResponse {
   attention: AttentionCard[];
   matrix: MatrixPoint[];
   national_trend: TimeseriesPoint[];
+  /** Whether the trend series reflects the filter or the full population. */
+  trend_scope: "filtered" | "national";
   band_counts: Record<string, number>;
   provenance: DataProvenance;
   filters_applied: Record<string, unknown>;

@@ -239,6 +239,11 @@ class OverviewResponse(ApiModel):
     attention: list[AttentionCard]
     matrix: list[MatrixPoint]
     national_trend: list[TimeseriesPoint]
+    # Whether the trend series reflects the current filter or the full
+    # population. Assembling a filtered series requires reading each selected
+    # service's history, so very broad selections fall back to the national
+    # view - the UI must label which one it is showing.
+    trend_scope: Literal["filtered", "national"] = "national"
     band_counts: dict[str, int]
     provenance: DataProvenance
     filters_applied: dict[str, Any] = Field(default_factory=dict)

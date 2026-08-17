@@ -126,6 +126,23 @@ class TestOverview:
         assert response.status_code == 200
         assert response.json()["kpis"] == []
 
+    def test_trend_scope_is_declared(self, client: TestClient):
+        """The chart must never present the national series as a filtered one."""
+        unfiltered = client.get("/api/v1/overview").json()
+        assert unfiltered["trend_scope"] == "national"
+
+        narrow = client.get(
+            "/api/v1/overview", params={"specialty_code": "C_150"}
+        ).json()
+        assert narrow["trend_scope"] in {"filtered", "national"}
+
+        # A single provider is always narrow enough to aggregate directly.
+        provider = client.get("/api/v1/providers").json()[0]["provider_code"]
+        single = client.get(
+            "/api/v1/overview", params={"provider_code": provider}
+        ).json()
+        assert single["trend_scope"] == "filtered"
+
 
 @needs_warehouse
 class TestRankings:

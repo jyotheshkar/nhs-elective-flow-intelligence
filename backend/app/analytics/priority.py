@@ -287,7 +287,7 @@ def score_snapshot(snapshot: pd.DataFrame) -> pd.DataFrame:
     result["priority_score"] = scored.where(in_basis)
     result["priority_band"] = [
         band_for_score(s) if ok else "UNSCORED"
-        for s, ok in zip(result["priority_score"], in_basis)
+        for s, ok in zip(result["priority_score"], in_basis, strict=True)
     ]
     result["priority_rank"] = (
         result["priority_score"]
