@@ -1,0 +1,15 @@
+# Normalise line endings so the repository is identical on Windows, macOS and
+# Linux, and CI does not see spurious diffs.
+* text=auto eol=lf
+
+# Binary artefacts must never be line-ending converted.
+*.parquet binary
+*.xlsx binary
+*.xls binary
+*.duckdb binary
+*.png binary
+*.jpg binary
+*.ico binary
+
+# Generated files: collapse in diffs and exclude from language statistics.
+frontend/package-lock.json linguist-generated=true -diff

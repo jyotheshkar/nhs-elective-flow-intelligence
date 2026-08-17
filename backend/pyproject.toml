@@ -1,0 +1,43 @@
+[project]
+name = "nhs-elective-flow-intelligence"
+version = "1.0.0"
+description = "Operational decision intelligence for NHS elective waiting list management"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers --tb=short"
+filterwarnings = [
+    "ignore::DeprecationWarning:pandas.*",
+]
+
+[tool.ruff]
+line-length = 90
+target-version = "py311"
+extend-exclude = [".venv", "__pycache__"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # import sorting
+    "B",    # bugbear
+    "C4",   # comprehensions
+    "UP",   # pyupgrade
+    "SIM",  # simplify
+    "RUF",  # ruff-specific
+]
+ignore = [
+    "E501",    # line length is handled by the formatter
+    "B008",    # FastAPI Depends()/Query() in defaults is the documented idiom
+    "SIM108",  # ternaries are not always clearer than if/else here
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests may use assert-heavy style and import fixtures locally.
+"tests/*" = ["B011", "SIM117"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]

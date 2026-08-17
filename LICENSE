@@ -1,0 +1,45 @@
+MIT License
+
+Copyright (c) 2026 Jyothesh Karnam
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+THIRD-PARTY DATA
+-------------------------------------------------------------------------------
+This licence covers the source code in this repository only.
+
+The application ingests Consultant-led Referral to Treatment (RTT) Waiting
+Times statistics published by NHS England. That data is not covered by this
+licence and remains subject to its own terms.
+
+NHS England publishes these statistics under the Open Government Licence v3.0:
+https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/
+
+Required attribution when reusing the data:
+
+    Source: NHS England, Consultant-led Referral to Treatment Waiting Times.
+    Contains public sector information licensed under the Open Government
+    Licence v3.0.
+
+No NHS England data is redistributed in this repository. Source workbooks are
+downloaded at build time from the official publication pages.
+
+This project is an independent portfolio prototype. It is not affiliated with,
+endorsed by, or connected to NHS England or any NHS organisation.

@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend (lint + tests)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Lint (ruff)
+        working-directory: backend
+        run: ruff check .
+
+      # Tests run without a warehouse: analytics tests use synthetic fixtures,
+      # and the API tests verify the degraded-mode behaviour, which is itself a
+      # requirement. Warehouse-dependent tests skip themselves.
+      - name: Tests (pytest)
+        working-directory: backend
+        run: pytest -v
+
+      - name: Demo pipeline smoke test
+        run: |
+          python scripts/build_warehouse.py --demo
+          python scripts/validate_data.py
+
+      - name: Tests against the built warehouse
+        working-directory: backend
+        run: pytest -v
+
+  frontend:
+    name: Frontend (lint + typecheck + build)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Lint (ESLint)
+        working-directory: frontend
+        run: npm run lint
+
+      - name: Type-check
+        working-directory: frontend
+        run: npm run typecheck
+
+      - name: Production build
+        working-directory: frontend
+        run: npm run build
+
+  docker:
+    name: Docker images build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build backend image
+        run: docker build -f backend/Dockerfile -t nhs-eff-backend .
+      - name: Build frontend image
+        run: docker build -f frontend/Dockerfile -t nhs-eff-frontend .

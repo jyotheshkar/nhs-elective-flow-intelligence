@@ -1,0 +1,83 @@
+# -----------------------------------------------------------------------------
+# NHS Elective Flow Intelligence - data source configuration
+# -----------------------------------------------------------------------------
+# All source locations live here. Application code must never hardcode URLs.
+#
+# NHS England reorganises its publication pages and renames files (they carry
+# random suffixes and "-revised" markers). Ingestion therefore *discovers* files
+# from the publication pages rather than assuming filenames.
+# -----------------------------------------------------------------------------
+
+sources:
+  rtt:
+    enabled: true
+    type: official
+    name: "NHS England Consultant-led Referral to Treatment (RTT) Waiting Times"
+    licence: "Open Government Licence v3.0"
+    attribution: "Source: NHS England, Consultant-led RTT Waiting Times."
+    landing_page: "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/"
+
+    # Publication pages are listed newest-first. Discovery walks these in order
+    # until the requested number of reporting months has been collected.
+    publication_pages:
+      - "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/rtt-data-2025-26/"
+      - "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/rtt-data-2024-25/"
+      - "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/rtt-data-2023-24/"
+
+    # Provider-level basis. Commissioner-level files exist but this product
+    # compares provider organisations, so provider files are used.
+    datasets:
+      incomplete:
+        # Waiting list (incomplete pathways) - the primary fact.
+        filename_pattern: '^Incomplete-Provider-(?P<mon>[A-Za-z]{3})(?P<yy>\d{2})'
+        required: true
+        sheet: "Provider"
+      admitted:
+        # Completed pathways where treatment involved admission.
+        filename_pattern: '^Admitted-Provider-(?P<mon>[A-Za-z]{3})(?P<yy>\d{2})'
+        required: false
+        sheet: "Provider"
+      non_admitted:
+        # Completed pathways not involving admission.
+        filename_pattern: '^NonAdmitted-Provider-(?P<mon>[A-Za-z]{3})(?P<yy>\d{2})'
+        required: false
+        sheet: "Provider"
+
+    # Files carry "-revised" / "-revised-2" suffixes when NHS England restates a
+    # month. Higher revision numbers supersede earlier files for the same month.
+    prefer_revised: true
+
+    # Header row (1-indexed) inside the Provider sheet. Verified against the
+    # published workbooks; validated at parse time and re-detected if it moves.
+    header_row: 14
+
+    # Rows that aggregate other rows must be excluded from the provider x
+    # specialty grain to avoid double counting.
+    #
+    # Verified against Dec-2025: for provider R1H, C_999 (132,390) equals the
+    # sum of every other treatment function, including the X0x groupings.
+    # X02-X06 ("Other - Medical/Mental Health/Paediatric/Surgical/Other") are
+    # therefore genuine, non-overlapping specialty groupings and are retained -
+    # they account for roughly a third of the national list.
+    excluded_specialty_codes:
+      - "C_999"   # Total (aggregate of all treatment functions)
+    excluded_provider_codes: []
+
+# NHS England region codes used in the provider files.
+regions:
+  Y56: "London"
+  Y58: "South West"
+  Y59: "South East"
+  Y60: "Midlands"
+  Y61: "East of England"
+  Y62: "North West"
+  Y63: "North East and Yorkshire"
+
+ingestion:
+  # Default number of most recent reporting months to ingest.
+  default_months: 18
+  # Hard ceiling to protect against accidental full-history downloads.
+  max_months: 36
+  request_timeout_seconds: 300
+  max_retries: 3
+  user_agent: "nhs-elective-flow-intelligence/1.0 (portfolio project; +https://github.com/)"

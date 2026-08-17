@@ -1,0 +1,43 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Node / Next.js ---
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+.eslintcache
+
+# --- Environment & secrets ---
+# .env may contain an API key for the optional LLM briefing. Never commit it.
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# --- Data ---
+# Source workbooks are large (~350 MB for 18 months) and are reproducibly
+# re-downloadable from NHS England, so they are not committed.
+data/raw/
+data/processed/
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+# The generated demo dataset is small and useful for a zero-network demo.
+!data/sample/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp

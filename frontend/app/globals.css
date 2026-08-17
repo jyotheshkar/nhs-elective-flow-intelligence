@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-surface-subtle text-ink antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Tabular figures keep numeric columns aligned in dense analytical tables. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A single, consistent focus ring for keyboard users across every control. */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-surface;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-lg border border-surface-border bg-surface shadow-card;
+  }
+
+  .card-header {
+    @apply flex flex-wrap items-start justify-between gap-3 border-b border-surface-border px-5 py-4;
+  }
+
+  .card-title {
+    @apply text-sm font-semibold tracking-tight text-ink;
+  }
+
+  .card-subtitle {
+    @apply mt-0.5 text-xs text-ink-subtle;
+  }
+
+  .label {
+    @apply text-2xs font-semibold uppercase tracking-wider text-ink-subtle;
+  }
+
+  .control {
+    @apply h-9 w-full rounded-md border border-surface-border bg-surface px-3 text-sm
+           text-ink shadow-sm transition-colors
+           hover:border-slate-300 focus:border-brand-600;
+  }
+
+  .btn {
+    @apply inline-flex h-9 items-center justify-center gap-1.5 rounded-md border
+           border-surface-border bg-surface px-3 text-sm font-medium text-ink
+           shadow-sm transition-colors hover:bg-surface-muted
+           disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply border-brand-700 bg-brand-700 text-white hover:bg-brand-800;
+  }
+
+  .btn-ghost {
+    @apply border-transparent bg-transparent shadow-none hover:bg-surface-muted;
+  }
+
+  .table-head {
+    @apply sticky top-0 z-10 bg-surface-muted text-2xs font-semibold uppercase
+           tracking-wider text-ink-subtle;
+  }
+
+  /* Skeleton shimmer for loading states. */
+  .skeleton {
+    @apply animate-pulse rounded bg-slate-200;
+  }
+}
+
+/* Recharts renders a focusable wrapper that adds no value for screen readers;
+   the underlying data is always also available as text or in a table. */
+.recharts-wrapper:focus {
+  outline: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

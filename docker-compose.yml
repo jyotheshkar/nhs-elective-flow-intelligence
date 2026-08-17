@@ -1,0 +1,54 @@
+# =============================================================================
+# NHS Elective Flow Intelligence - full stack
+# =============================================================================
+#   docker compose up --build
+#
+# The backend serves the API on :8000 and the frontend on :3000.
+#
+# IMPORTANT: the warehouse must exist before the API can serve analytics.
+# Build it once on the host (`make data`) - the ./data bind mount makes it
+# visible to the container - or run it inside the container:
+#
+#   docker compose run --rm backend python /app/scripts/build_warehouse.py
+#   docker compose run --rm backend python /app/scripts/build_warehouse.py --demo
+#
+# Without a warehouse the API still starts and returns an actionable 503, and
+# the UI renders its "official data unavailable" state rather than crashing.
+# =============================================================================
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: nhs-eff-backend
+    ports:
+      - "8000:8000"
+    environment:
+      APP_DATA_MODE: ${APP_DATA_MODE:-official}
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      INGEST_MONTHS: ${INGEST_MONTHS:-18}
+    volumes:
+      # Data persists on the host, so a rebuild of the image does not force a
+      # ~350 MB re-download of the source workbooks.
+      - ./data:/app/data
+      - ./config:/app/config:ro
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        # The browser talks to the API directly, so this must be an address
+        # reachable from the host, not the compose service name.
+        NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+    container_name: nhs-eff-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+    depends_on:
+      - backend
+    restart: unless-stopped
