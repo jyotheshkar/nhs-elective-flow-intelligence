@@ -336,19 +336,19 @@ export default function ServiceDetailPage({
               <BarChart data={longWaitRows} margin={{ top: 8, right: 8, left: 4 }}>
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="#e2e8f0"
+                  stroke="#dbe3ef"
                   vertical={false}
                 />
                 <XAxis
                   dataKey="label"
-                  tick={{ fontSize: 10, fill: "#64748b" }}
+                  tick={{ fontSize: 10, fill: "#5f6b82" }}
                   tickLine={false}
-                  axisLine={{ stroke: "#e2e8f0" }}
+                  axisLine={{ stroke: "#dbe3ef" }}
                   interval="preserveStartEnd"
                   minTickGap={20}
                 />
                 <YAxis
-                  tick={{ fontSize: 11, fill: "#64748b" }}
+                  tick={{ fontSize: 11, fill: "#5f6b82" }}
                   tickLine={false}
                   axisLine={false}
                   width={52}
@@ -359,7 +359,7 @@ export default function ServiceDetailPage({
                   contentStyle={{
                     fontSize: 12,
                     borderRadius: 8,
-                    border: "1px solid #e2e8f0",
+                    border: "1px solid #dbe3ef",
                   }}
                 />
                 <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
@@ -367,7 +367,7 @@ export default function ServiceDetailPage({
                   dataKey="within18"
                   stackId="a"
                   name="Within 18 weeks"
-                  fill="#047857"
+                  fill="#007f3b"
                   isAnimationActive={false}
                 />
                 <Bar
@@ -410,19 +410,19 @@ export default function ServiceDetailPage({
                 >
                   <CartesianGrid
                     strokeDasharray="3 3"
-                    stroke="#e2e8f0"
+                    stroke="#dbe3ef"
                     vertical={false}
                   />
                   <XAxis
                     dataKey="label"
-                    tick={{ fontSize: 10, fill: "#64748b" }}
+                    tick={{ fontSize: 10, fill: "#5f6b82" }}
                     tickLine={false}
-                    axisLine={{ stroke: "#e2e8f0" }}
+                    axisLine={{ stroke: "#dbe3ef" }}
                     interval="preserveStartEnd"
                     minTickGap={20}
                   />
                   <YAxis
-                    tick={{ fontSize: 11, fill: "#64748b" }}
+                    tick={{ fontSize: 11, fill: "#5f6b82" }}
                     tickLine={false}
                     axisLine={false}
                     width={52}
@@ -433,7 +433,7 @@ export default function ServiceDetailPage({
                     contentStyle={{
                       fontSize: 12,
                       borderRadius: 8,
-                      border: "1px solid #e2e8f0",
+                      border: "1px solid #dbe3ef",
                     }}
                   />
                   <Legend
@@ -444,7 +444,7 @@ export default function ServiceDetailPage({
                     type="monotone"
                     dataKey="total"
                     name="Total completed"
-                    stroke="#1e40af"
+                    stroke="#003087"
                     strokeWidth={2.25}
                     dot={false}
                     isAnimationActive={false}
@@ -453,7 +453,7 @@ export default function ServiceDetailPage({
                     type="monotone"
                     dataKey="admitted"
                     name="Admitted"
-                    stroke="#0891b2"
+                    stroke="#0072ce"
                     strokeWidth={1.75}
                     dot={false}
                     isAnimationActive={false}
@@ -462,7 +462,7 @@ export default function ServiceDetailPage({
                     type="monotone"
                     dataKey="nonAdmitted"
                     name="Non-admitted"
-                    stroke="#7c3aed"
+                    stroke="#00a9ce"
                     strokeWidth={1.75}
                     dot={false}
                     isAnimationActive={false}

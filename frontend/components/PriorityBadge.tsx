@@ -48,8 +48,8 @@ export const BAND_CHART_COLOURS: Record<string, string> = {
   CRITICAL: "#b91c1c",
   HIGH: "#c2410c",
   MODERATE: "#a16207",
-  LOW: "#047857",
-  UNSCORED: "#94a3b8",
+  LOW: "#007f3b",
+  UNSCORED: "#8494ad",
 };
 
 interface Props {

@@ -53,11 +53,33 @@ export class ApiError extends Error {
 export class ApiUnreachableError extends ApiError {
   constructor(message: string) {
     super(message, 0, [
-      "Start the backend: uvicorn app.main:app --reload (from ./backend)",
-      "Or run the whole stack with: docker compose up --build",
+      "If running locally: uvicorn app.main:app --reload (from ./backend)",
+      "Free-tier hosting sleeps after inactivity; the first request can take up to a minute.",
     ]);
     this.name = "ApiUnreachableError";
   }
+}
+
+/**
+ * The backend is hosted on a free tier that sleeps after inactivity, so the
+ * first request after a quiet period can time out or refuse connections while
+ * the service cold-starts. GET requests therefore retry with backoff before
+ * surfacing an error. Mutating requests are never retried automatically.
+ */
+const COLD_START_RETRY_DELAYS_MS = [2000, 5000, 10000];
+
+function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(resolve, ms);
+    signal?.addEventListener(
+      "abort",
+      () => {
+        clearTimeout(timer);
+        reject(new DOMException("Aborted", "AbortError"));
+      },
+      { once: true },
+    );
+  });
 }
 
 interface RequestOptions {
@@ -70,21 +92,49 @@ interface RequestOptions {
 
 async function request<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const url = `${API_BASE}${API_PREFIX}${path}`;
+  const method = options.method ?? "GET";
   let response: Response;
 
-  try {
-    response = await fetch(url, {
-      method: options.method ?? "GET",
+  const attemptFetch = () =>
+    fetch(url, {
+      method,
       headers: options.body ? { "Content-Type": "application/json" } : undefined,
       body: options.body ? JSON.stringify(options.body) : undefined,
       signal: options.signal,
       cache: options.cache ?? "no-store",
     });
+
+  try {
+    response = await attemptFetch();
   } catch (error) {
     if ((error as Error).name === "AbortError") throw error;
-    throw new ApiUnreachableError(
-      `Cannot reach the analytics API at ${API_BASE}. Is the backend running?`,
-    );
+    // Cold-start tolerance: retry idempotent reads with backoff.
+    if (method === "GET") {
+      let recovered: Response | null = null;
+      for (const delay of COLD_START_RETRY_DELAYS_MS) {
+        try {
+          await sleep(delay, options.signal);
+          recovered = await attemptFetch();
+          break;
+        } catch (retryError) {
+          if ((retryError as Error).name === "AbortError") throw retryError;
+        }
+      }
+      if (recovered) {
+        response = recovered;
+      } else {
+        throw new ApiUnreachableError(
+          `The analytics service at ${API_BASE} is not responding. This free ` +
+            "portfolio deployment sleeps after inactivity and can take up to " +
+            "a minute to wake - please retry shortly.",
+        );
+      }
+    } else {
+      throw new ApiUnreachableError(
+        `Cannot reach the analytics API at ${API_BASE}. The free-tier backend ` +
+          "may be waking from sleep - please retry in a few seconds.",
+      );
+    }
   }
 
   if (!response.ok) {

@@ -9,6 +9,7 @@ const NAV = [
   { href: "/", label: "Control Room" },
   { href: "/rankings", label: "Rankings" },
   { href: "/compare", label: "Compare" },
+  { href: "/scenario", label: "Scenario" },
   { href: "/quality", label: "Data Quality" },
   { href: "/methodology", label: "How It Works" },
 ];
@@ -76,6 +77,9 @@ export default function SiteHeader({ provenance }: Props) {
         </nav>
 
         <div className="order-2 ml-auto flex items-center gap-3 lg:order-3">
+          <span className="hidden rounded-full border border-surface-border bg-surface-subtle px-2.5 py-1 text-2xs font-medium text-ink-subtle md:inline-flex">
+            Independent portfolio prototype
+          </span>
           {provenance && (
             <div className="hidden text-right sm:block">
               <p className="text-2xs text-ink-subtle">

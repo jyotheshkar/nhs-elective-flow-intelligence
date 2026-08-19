@@ -44,6 +44,11 @@ jobs:
           python scripts/build_warehouse.py --demo
           python scripts/validate_data.py
 
+      # Guards the deployment path: Render's build step runs exactly this to
+      # recreate the warehouse from the committed Parquet layer.
+      - name: Warehouse materialisation (deployment path)
+        run: python scripts/materialise_warehouse.py
+
       - name: Tests against the built warehouse
         working-directory: backend
         run: pytest -v

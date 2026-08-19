@@ -399,8 +399,8 @@ $$
 $$
 
 Positive means the model genuinely beats "assume next month looks like this month". On
-the reference build only **56.1%** of series clear that bar, and `naive_drift` is the
-selected model for 886 of 2,078 series (43%). This is published in the product rather
+the reference build only **54.8%** of series clear that bar, and `naive_drift` is the
+selected model for 901 of 2,078 series (43%). This is published in the product rather
 than hidden — it is a real property of slow-moving waiting-list series.
 
 ### 5.4 Prediction intervals
@@ -467,7 +467,8 @@ Returns 0 when the baseline projection does not indicate growth, and is flagged 
 infeasible above 100%.
 
 **Worked example** (real service, reference build): current list 3,423; 3-month forecast
-3,589; mean monthly activity 485.
+3,589; mean monthly activity 485 (figures from an earlier build vintage; the
+arithmetic is what matters).
 
 $$
 u^{*} = \frac{3589 - 3423}{3 \times 485} \times 100 = 11.4\%

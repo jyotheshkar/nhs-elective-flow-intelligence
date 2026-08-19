@@ -89,17 +89,17 @@ export default function WaitingListTrendChart({
     <div>
       <ResponsiveContainer width="100%" height={height}>
         <ComposedChart data={rows} margin={{ top: 8, right: 12, left: 4, bottom: 4 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#dbe3ef" vertical={false} />
           <XAxis
             dataKey="label"
-            tick={{ fontSize: 11, fill: "#64748b" }}
+            tick={{ fontSize: 11, fill: "#5f6b82" }}
             tickLine={false}
-            axisLine={{ stroke: "#e2e8f0" }}
+            axisLine={{ stroke: "#dbe3ef" }}
             interval="preserveStartEnd"
             minTickGap={24}
           />
           <YAxis
-            tick={{ fontSize: 11, fill: "#64748b" }}
+            tick={{ fontSize: 11, fill: "#5f6b82" }}
             tickLine={false}
             axisLine={false}
             tickFormatter={(value) => fmtCompact(value as number)}
@@ -119,7 +119,7 @@ export default function WaitingListTrendChart({
             contentStyle={{
               fontSize: 12,
               borderRadius: 8,
-              border: "1px solid #e2e8f0",
+              border: "1px solid #dbe3ef",
               boxShadow: "0 4px 6px -1px rgb(15 23 42 / 0.07)",
             }}
           />
@@ -132,7 +132,7 @@ export default function WaitingListTrendChart({
             dataKey="band"
             name="Modelled range"
             stroke="none"
-            fill="#2563eb"
+            fill="#0072ce"
             fillOpacity={0.1}
             connectNulls
             isAnimationActive={false}
@@ -141,7 +141,7 @@ export default function WaitingListTrendChart({
             type="monotone"
             dataKey="actual"
             name="Waiting list (published)"
-            stroke="#1e40af"
+            stroke="#003087"
             strokeWidth={2.25}
             dot={false}
             connectNulls={false}
@@ -151,10 +151,10 @@ export default function WaitingListTrendChart({
             type="monotone"
             dataKey="forecast"
             name="Forecast (modelled)"
-            stroke="#2563eb"
+            stroke="#0072ce"
             strokeWidth={2.25}
             strokeDasharray="5 4"
-            dot={{ r: 3, fill: "#2563eb" }}
+            dot={{ r: 3, fill: "#0072ce" }}
             connectNulls
             isAnimationActive={false}
           />
@@ -162,13 +162,13 @@ export default function WaitingListTrendChart({
           {forecastStart && (
             <ReferenceLine
               x={fmtMonth(forecastStart)}
-              stroke="#94a3b8"
+              stroke="#8494ad"
               strokeDasharray="2 3"
               label={{
                 value: "Forecast →",
                 position: "insideTopRight",
                 fontSize: 10,
-                fill: "#64748b",
+                fill: "#5f6b82",
               }}
             />
           )}

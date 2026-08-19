@@ -126,6 +126,27 @@ class TestOverview:
         assert response.status_code == 200
         assert response.json()["kpis"] == []
 
+    def test_national_trend_carries_waiting_list_values(self, client: TestClient):
+        """Regression: vw_national_trend names the measure `waiting_list`, not
+        `total_incomplete_pathways`. Reading only the latter returned a series
+        of nulls, which rendered a chart with axes and a legend but no line."""
+        trend = client.get("/api/v1/overview").json()["national_trend"]
+        assert len(trend) > 0
+        values = [p["waiting_list"] for p in trend]
+        assert all(v is not None for v in values), (
+            "national trend contains null waiting-list values"
+        )
+        assert all(v > 0 for v in values)
+
+    def test_filtered_trend_also_carries_values(self, client: TestClient):
+        provider = client.get("/api/v1/providers").json()[0]["provider_code"]
+        body = client.get(
+            "/api/v1/overview", params={"provider_code": provider}
+        ).json()
+        trend = body["national_trend"]
+        if trend:
+            assert any(p["waiting_list"] is not None for p in trend)
+
     def test_trend_scope_is_declared(self, client: TestClient):
         """The chart must never present the national series as a filtered one."""
         unfiltered = client.get("/api/v1/overview").json()

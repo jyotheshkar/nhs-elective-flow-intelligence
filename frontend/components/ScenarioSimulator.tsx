@@ -7,6 +7,9 @@ import {
   CartesianGrid,
   Cell,
   LabelList,
+  Legend,
+  Line,
+  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -15,7 +18,13 @@ import {
 
 import { ErrorState, LoadingSkeleton } from "@/components/States";
 import { api } from "@/lib/api";
-import { fmtCompact, fmtCount, fmtDecimal, fmtSignedCount } from "@/lib/format";
+import {
+  fmtCompact,
+  fmtCount,
+  fmtDecimal,
+  fmtMonth,
+  fmtSignedCount,
+} from "@/lib/format";
 import { useApiData } from "@/lib/useApiData";
 import type { ScenarioResponse } from "@/types/api";
 
@@ -87,6 +96,16 @@ export default function ScenarioSimulator({
 
   const selected = data?.series.find((s) => s.uplift_pct === uplift);
   const baselinePoint = selected?.points.find((p) => p.horizon_months === 3);
+
+  // Trajectory: baseline vs the selected uplift at each forecast horizon.
+  const trajectoryRows =
+    selected?.points.map((point) => ({
+      label: point.month_key
+        ? `+${point.horizon_months}m (${fmtMonth(point.month_key)})`
+        : `+${point.horizon_months}m`,
+      baseline: point.baseline_backlog,
+      scenario: point.scenario_backlog,
+    })) ?? [];
 
   // Chart: 3-month modelled backlog under each uplift.
   const chartRows =
@@ -194,6 +213,76 @@ export default function ScenarioSimulator({
         </div>
       )}
 
+      {/* --- Trajectory: baseline vs scenario --------------------------- */}
+      {trajectoryRows.length > 1 && (
+        <div>
+          <p className="label mb-2">
+            Modelled trajectory — baseline vs +{uplift}% activity
+          </p>
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart
+              data={trajectoryRows}
+              margin={{ top: 8, right: 12, left: 4, bottom: 4 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="#dbe3ef"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="label"
+                tick={{ fontSize: 11, fill: "#5f6b82" }}
+                tickLine={false}
+                axisLine={{ stroke: "#dbe3ef" }}
+              />
+              <YAxis
+                tick={{ fontSize: 11, fill: "#5f6b82" }}
+                tickLine={false}
+                axisLine={false}
+                width={52}
+                domain={["auto", "auto"]}
+                tickFormatter={(v) => fmtCompact(v as number)}
+              />
+              <Tooltip
+                formatter={(v, n) => [fmtCount(v as number), n as string]}
+                contentStyle={{
+                  fontSize: 12,
+                  borderRadius: 8,
+                  border: "1px solid #dbe3ef",
+                }}
+              />
+              <Legend
+                wrapperStyle={{ fontSize: 11, paddingTop: 6 }}
+                iconType="plainline"
+              />
+              <Line
+                type="monotone"
+                dataKey="baseline"
+                name="Baseline forecast (modelled)"
+                stroke="#5f6b82"
+                strokeWidth={2}
+                strokeDasharray="5 4"
+                dot={{ r: 3 }}
+                isAnimationActive={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="scenario"
+                name={`Scenario +${uplift}% (modelled)`}
+                stroke="#005eb8"
+                strokeWidth={2.25}
+                dot={{ r: 3, fill: "#005eb8" }}
+                isAnimationActive={false}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+          <p className="mt-1 text-2xs text-ink-subtle">
+            Both lines are modelled projections, not published NHS England
+            figures.
+          </p>
+        </div>
+      )}
+
       {/* --- Comparison chart ------------------------------------------- */}
       {chartRows.length > 0 && (
         <div>
@@ -205,15 +294,15 @@ export default function ScenarioSimulator({
               data={chartRows}
               margin={{ top: 20, right: 8, left: 4, bottom: 4 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#dbe3ef" vertical={false} />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: 11, fill: "#64748b" }}
+                tick={{ fontSize: 11, fill: "#5f6b82" }}
                 tickLine={false}
-                axisLine={{ stroke: "#e2e8f0" }}
+                axisLine={{ stroke: "#dbe3ef" }}
               />
               <YAxis
-                tick={{ fontSize: 11, fill: "#64748b" }}
+                tick={{ fontSize: 11, fill: "#5f6b82" }}
                 tickLine={false}
                 axisLine={false}
                 width={52}
@@ -225,21 +314,21 @@ export default function ScenarioSimulator({
                 contentStyle={{
                   fontSize: 12,
                   borderRadius: 8,
-                  border: "1px solid #e2e8f0",
+                  border: "1px solid #dbe3ef",
                 }}
               />
               <Bar dataKey="backlog" radius={[4, 4, 0, 0]} isAnimationActive={false}>
                 {chartRows.map((row) => (
                   <Cell
                     key={row.label}
-                    fill={row.uplift === uplift ? "#1d4ed8" : "#bfdbfe"}
+                    fill={row.uplift === uplift ? "#005eb8" : "#b9d9f0"}
                   />
                 ))}
                 <LabelList
                   dataKey="backlog"
                   position="top"
                   formatter={(v: unknown) => fmtCompact(v as number)}
-                  style={{ fontSize: 10, fill: "#475569" }}
+                  style={{ fontSize: 10, fill: "#3d4759" }}
                 />
               </Bar>
             </BarChart>

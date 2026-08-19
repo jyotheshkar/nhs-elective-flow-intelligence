@@ -21,7 +21,7 @@ in most urgent need.
 ### 1.2 Reporting lag
 
 NHS England publishes RTT roughly six to eight weeks after month end. In the reference
-build, March 2026 data was published on 14 May 2026.
+build, June 2026 data was published in August 2026.
 
 **Consequence.** The "current position" is always historical. A service that
 deteriorated sharply last month will not appear here for two months. This product
@@ -121,7 +121,7 @@ This is a deliberate trade-off. Percentage growth on a 40-pathway list is
 noise-dominated, and because the score is a cross-sectional statistic, a service outside
 the basis would receive the neutral fallback on every component and total exactly 50 —
 appearing as "HIGH" purely as an artefact of the defaults. Withholding the score is more
-honest than publishing a meaningless one, but it does mean roughly 1,400 of 3,450
+honest than publishing a meaningless one, but it does mean roughly 1,360 of 3,400
 services carry no prioritisation signal.
 
 ### 2.5 Missing components score neutrally
@@ -156,7 +156,7 @@ is a statement about *continuation of recent behaviour*, nothing more.
 
 ### 3.3 Naive often wins
 
-On the reference build only **56.1%** of series beat a no-change benchmark, and
+On the reference build only **54.8%** of series beat a no-change benchmark, and
 `naive_drift` was selected for 43% of them.
 
 **Consequence.** For a large minority of services these forecasts add little over "next
@@ -166,7 +166,7 @@ misleading. The confidence label exists to make this legible per service.
 
 ### 3.4 No seasonality modelling
 
-18 months is barely one and a half annual cycles — not enough to identify a seasonal
+21 months is under two annual cycles — not enough to identify a seasonal
 component without overfitting.
 
 **Consequence.** Genuine seasonal effects (winter pressures, summer annual leave) are
@@ -230,8 +230,8 @@ Flagged month-on-month movements may be genuine operational change, a reporting 
 an organisational merger, or a data problem. An automated check cannot distinguish
 these.
 
-**Consequence.** The 1,011 anomalies flagged on the reference build are *items requiring
-review*, not 1,011 data errors. Every description says so explicitly.
+**Consequence.** The 1,081 anomalies flagged on the reference build are *items requiring
+review*, not 1,081 data errors. Every description says so explicitly.
 
 ### 5.2 Only internally-checkable properties are checked
 

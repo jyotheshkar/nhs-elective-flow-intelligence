@@ -26,12 +26,21 @@ next-env.d.ts
 !.env.example
 
 # --- Data ---
-# Source workbooks are large (~350 MB for 18 months) and are reproducibly
-# re-downloadable from NHS England, so they are not committed.
-data/raw/
-data/processed/
+# Source workbooks are large (~350 MB) and reproducibly re-downloadable from
+# NHS England, so they are never committed.
+data/raw/*
 !data/raw/.gitkeep
+
+# The PROCESSED analytical layer (Parquet, ~35 MB total) IS committed: it is
+# the deployable artefact. Free hosting has an ephemeral filesystem, so the
+# backend build step materialises DuckDB from these files at deploy time
+# (scripts/materialise_warehouse.py). The DuckDB file itself is not committed
+# because its storage format is version-sensitive; Parquet is the durable
+# interchange layer.
+data/processed/*
 !data/processed/.gitkeep
+!data/processed/*.parquet
+
 # The generated demo dataset is small and useful for a zero-network demo.
 !data/sample/
 

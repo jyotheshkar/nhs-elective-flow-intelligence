@@ -83,16 +83,27 @@ def _service_rows(frame: pd.DataFrame) -> list[ServiceRow]:
 
 
 def _history_points(frame: pd.DataFrame) -> list[TimeseriesPoint]:
+    """Convert a monthly frame into chart points.
+
+    The waiting-list measure arrives under two names depending on the source:
+    ``total_incomplete_pathways`` at service grain, and ``waiting_list`` from
+    the pre-aggregated national/provider views. Accepting both keeps the views
+    free to name their aggregates naturally - reading only one name silently
+    produced a chart with axes but no line.
+    """
     points: list[TimeseriesPoint] = []
     for record in repo.records(frame):
         month = record.get("month_key")
         if not month:
             continue
+        waiting_list = record.get("total_incomplete_pathways")
+        if waiting_list is None:
+            waiting_list = record.get("waiting_list")
         points.append(
             TimeseriesPoint(
                 month_key=str(month),
                 month_label=_month_label(str(month)),
-                waiting_list=record.get("total_incomplete_pathways"),
+                waiting_list=waiting_list,
                 within_18_weeks=record.get("within_18_weeks"),
                 pct_within_18_weeks=record.get("pct_within_18_weeks"),
                 over_52_weeks=record.get("over_52_weeks"),

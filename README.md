@@ -10,6 +10,18 @@ forecasting and capacity scenario modelling.
 > NHS England or any NHS organisation. Not a clinical decision support, triage or
 > diagnosis system. Uses only aggregate, published, non-patient-identifiable statistics.
 
+## Live demo
+
+| | |
+|---|---|
+| **Application** | https://nhs-elective-flow-intelligence.vercel.app |
+| **API docs (OpenAPI)** | https://nhs-elective-flow-api.onrender.com/docs |
+| **API health** | https://nhs-elective-flow-api.onrender.com/health |
+
+> The backend runs on a free tier that sleeps after inactivity — the first request
+> after a quiet period can take up to a minute while the service wakes. The frontend
+> retries automatically and says so rather than appearing broken.
+
 ---
 
 ## The problem
@@ -59,7 +71,7 @@ workbooks, builds a reproducible analytical warehouse, and produces:
   implied to stabilise it. Labelled as a modelled estimate with its assumptions
   attached, never as a causal claim.
 - **A real data quality engine** — completeness, consistency, freshness and anomaly
-  detection over ~63,000 fact rows, with every finding listed and a documented
+  detection over ~73,000 fact rows, with every finding listed and a documented
   composite score.
 - **Deterministic management briefings** — executive prose assembled from computed
   values by a rules engine. If a metric is missing the sentence is omitted, so the
@@ -144,8 +156,8 @@ rationale.
 | **Source** | NHS England — Consultant-led Referral to Treatment (RTT) Waiting Times |
 | **Basis** | Provider level (the product compares provider organisations) |
 | **Grain** | One row per provider × treatment function × reporting month |
-| **Period loaded** | 18 months (October 2024 – March 2026 in the reference build) |
-| **Scale** | 155 providers · 23 treatment functions · 62,744 fact rows |
+| **Period loaded** | 21 months (October 2024 – June 2026 in the reference build) |
+| **Scale** | 155 providers · 23 treatment functions · 72,956 fact rows |
 | **Licence** | Open Government Licence v3.0 |
 | **PII** | None. Aggregate published statistics only. |
 
@@ -263,15 +275,15 @@ Models are deliberately interpretable. With 12–24 monthly observations per ser
 anything elaborate would overfit, and the audience needs to be able to challenge the
 method in an operational meeting.
 
-**Observed performance on the reference build** (2,078 forecastable series):
+**Observed performance on the reference build** (June 2026 data, 2,078 forecastable series):
 
 | Metric | Value |
 |---|---|
-| Median backtest MAPE | **3.75%** |
-| Series beating the naive benchmark | **56.1%** |
+| Median backtest MAPE | **3.68%** |
+| Series beating the naive benchmark | **54.8%** |
 | Series with insufficient history | 1,487 (reported, not forecast) |
-| Confidence: High / Moderate / Low | 771 / 1,016 / 291 |
-| Most-selected model | `naive_drift` (886 series, 43%) |
+| Confidence: High / Moderate / Low | 779 / 1,029 / 270 |
+| Most-selected model | `naive_drift` (901 series, 43%) |
 
 That a no-change benchmark wins 43% of the time is a genuine finding about slow-moving
 waiting-list series, and it is surfaced in the product rather than buried.
@@ -323,8 +335,8 @@ data. Public statistics contain legitimate reporting changes, organisational mer
 and genuine step-changes that an automated check cannot distinguish from a data
 problem.
 
-**Reference build: 85.5 / 100**, with 1,035 findings — 1,011 unusual month-on-month
-movements, 23 missing reporting months, 1 freshness flag.
+**Reference build: 94.9 / 100**, with 1,104 findings — 1,081 unusual month-on-month
+movements and 23 missing reporting months.
 
 One consistency check is worth calling out: percentages are **recomputed from counts**
 rather than inherited from the publication, then **reconciled against the published
@@ -423,6 +435,24 @@ cd backend && uvicorn app.main:app --reload --port 8000
 cd frontend && npm run dev
 ```
 </details>
+
+### Hosted deployment (free tier)
+
+The production architecture is **Vercel (frontend) + Render (backend)**, both on
+free plans:
+
+- **Backend — Render web service.** [`render.yaml`](render.yaml) is a one-click
+  blueprint. The analytical warehouse is materialised **at build time** from the
+  Parquet artefacts committed in `data/processed/`
+  (`scripts/materialise_warehouse.py`), so the read-only DuckDB file is part of the
+  deploy and nothing depends on Render's ephemeral filesystem at runtime. Set
+  `CORS_ORIGINS` to the frontend URL.
+- **Frontend — Vercel.** Project root `frontend/`, with
+  `NEXT_PUBLIC_API_BASE_URL` pointing at the Render service. The API client
+  retries GET requests with backoff to absorb free-tier cold starts.
+- **Refreshing the hosted data** is a rebuild, not a server job: run
+  `make data` locally when NHS England publishes a new month, commit the updated
+  `data/processed/*.parquet`, and push — both hosts redeploy from Git.
 
 ### Docker
 

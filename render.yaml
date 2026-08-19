@@ -1,0 +1,33 @@
+# =============================================================================
+# Render blueprint - FastAPI backend on a free web service
+# =============================================================================
+# The analytical warehouse is materialised at BUILD time from the Parquet
+# artefacts committed in data/processed/. Build outputs are part of the deploy,
+# so the read-only DuckDB file survives restarts; nothing is written to the
+# ephemeral filesystem at runtime.
+#
+# After the frontend is live, set CORS_ORIGINS to the real Vercel URL(s).
+# =============================================================================
+
+services:
+  - type: web
+    name: nhs-elective-flow-api
+    runtime: python
+    plan: free
+    rootDir: .
+    buildCommand: >-
+      pip install -r backend/requirements.txt &&
+      python scripts/materialise_warehouse.py
+    startCommand: >-
+      cd backend &&
+      uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: PYTHONPATH
+        value: /opt/render/project/src/backend
+      - key: CORS_ORIGINS
+        value: https://nhs-elective-flow-intelligence.vercel.app,http://localhost:3000
+      - key: LOG_LEVEL
+        value: INFO

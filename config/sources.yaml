@@ -20,6 +20,7 @@ sources:
     # Publication pages are listed newest-first. Discovery walks these in order
     # until the requested number of reporting months has been collected.
     publication_pages:
+      - "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/rtt-data-2026-27/"
       - "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/rtt-data-2025-26/"
       - "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/rtt-data-2024-25/"
       - "https://www.england.nhs.uk/statistics/statistical-work-areas/rtt-waiting-times/rtt-data-2023-24/"

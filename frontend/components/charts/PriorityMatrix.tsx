@@ -68,21 +68,21 @@ export default function PriorityMatrix({ points, height = 360 }: Props) {
     <div>
       <ResponsiveContainer width="100%" height={height}>
         <ScatterChart margin={{ top: 12, right: 20, bottom: 32, left: 8 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <CartesianGrid strokeDasharray="3 3" stroke="#dbe3ef" />
           <XAxis
             type="number"
             dataKey="x"
             name="3-month waiting-list growth"
             unit="%"
-            tick={{ fontSize: 11, fill: "#64748b" }}
+            tick={{ fontSize: 11, fill: "#5f6b82" }}
             tickLine={false}
-            axisLine={{ stroke: "#e2e8f0" }}
+            axisLine={{ stroke: "#dbe3ef" }}
             label={{
               value: "3-month waiting-list growth (%)",
               position: "insideBottom",
               offset: -18,
               fontSize: 11,
-              fill: "#475569",
+              fill: "#3d4759",
             }}
           />
           <YAxis
@@ -90,7 +90,7 @@ export default function PriorityMatrix({ points, height = 360 }: Props) {
             dataKey="y"
             name="Long-wait burden"
             unit="%"
-            tick={{ fontSize: 11, fill: "#64748b" }}
+            tick={{ fontSize: 11, fill: "#5f6b82" }}
             tickLine={false}
             axisLine={false}
             width={56}
@@ -100,22 +100,22 @@ export default function PriorityMatrix({ points, height = 360 }: Props) {
               position: "insideLeft",
               offset: 8,
               fontSize: 11,
-              fill: "#475569",
+              fill: "#3d4759",
               style: { textAnchor: "middle" },
             }}
           />
           <ZAxis type="number" dataKey="z" range={[30, 520]} name="Waiting list" />
 
           {/* Quadrant guides: zero growth, and the median long-wait burden. */}
-          <ReferenceLine x={0} stroke="#94a3b8" strokeDasharray="3 3" />
-          <ReferenceLine y={medianY} stroke="#94a3b8" strokeDasharray="3 3" />
+          <ReferenceLine x={0} stroke="#8494ad" strokeDasharray="3 3" />
+          <ReferenceLine y={medianY} stroke="#8494ad" strokeDasharray="3 3" />
 
           <Tooltip
             cursor={{ strokeDasharray: "3 3" }}
             contentStyle={{
               fontSize: 12,
               borderRadius: 8,
-              border: "1px solid #e2e8f0",
+              border: "1px solid #dbe3ef",
             }}
             content={({ active, payload }) => {
               if (!active || !payload?.length) return null;
@@ -171,7 +171,7 @@ export default function PriorityMatrix({ points, height = 360 }: Props) {
             {data.map((entry, index) => (
               <Cell
                 key={index}
-                fill={BAND_CHART_COLOURS[entry.band] ?? "#94a3b8"}
+                fill={BAND_CHART_COLOURS[entry.band] ?? "#8494ad"}
               />
             ))}
           </Scatter>

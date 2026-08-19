@@ -38,7 +38,7 @@ import type { ComparisonResponse } from "@/types/api";
 const MAX_PROVIDERS = 5;
 
 // Distinguishable in both colour and, via the legend order, position.
-const SERIES_COLOURS = ["#1d4ed8", "#b91c1c", "#047857", "#a16207", "#7c3aed"];
+const SERIES_COLOURS = ["#005eb8", "#b91c1c", "#007f3b", "#a16207", "#330072"];
 
 export default function ComparePage() {
   const reference = useReferenceData();
@@ -356,19 +356,19 @@ export default function ComparePage() {
                   <LineChart data={trendRows} margin={{ top: 8, right: 8, left: 4 }}>
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      stroke="#e2e8f0"
+                      stroke="#dbe3ef"
                       vertical={false}
                     />
                     <XAxis
                       dataKey="label"
-                      tick={{ fontSize: 10, fill: "#64748b" }}
+                      tick={{ fontSize: 10, fill: "#5f6b82" }}
                       tickLine={false}
-                      axisLine={{ stroke: "#e2e8f0" }}
+                      axisLine={{ stroke: "#dbe3ef" }}
                       interval="preserveStartEnd"
                       minTickGap={24}
                     />
                     <YAxis
-                      tick={{ fontSize: 11, fill: "#64748b" }}
+                      tick={{ fontSize: 11, fill: "#5f6b82" }}
                       tickLine={false}
                       axisLine={false}
                       width={52}
@@ -379,7 +379,7 @@ export default function ComparePage() {
                       contentStyle={{
                         fontSize: 12,
                         borderRadius: 8,
-                        border: "1px solid #e2e8f0",
+                        border: "1px solid #dbe3ef",
                       }}
                     />
                     <Legend
@@ -418,21 +418,21 @@ export default function ComparePage() {
                   >
                     <CartesianGrid
                       strokeDasharray="3 3"
-                      stroke="#e2e8f0"
+                      stroke="#dbe3ef"
                       vertical={false}
                     />
                     <XAxis
                       dataKey="label"
-                      tick={{ fontSize: 9, fill: "#64748b" }}
+                      tick={{ fontSize: 9, fill: "#5f6b82" }}
                       tickLine={false}
-                      axisLine={{ stroke: "#e2e8f0" }}
+                      axisLine={{ stroke: "#dbe3ef" }}
                       interval={0}
                       angle={-15}
                       textAnchor="end"
                       height={54}
                     />
                     <YAxis
-                      tick={{ fontSize: 11, fill: "#64748b" }}
+                      tick={{ fontSize: 11, fill: "#5f6b82" }}
                       tickLine={false}
                       axisLine={false}
                       width={44}
@@ -446,19 +446,19 @@ export default function ComparePage() {
                       contentStyle={{
                         fontSize: 12,
                         borderRadius: 8,
-                        border: "1px solid #e2e8f0",
+                        border: "1px solid #dbe3ef",
                       }}
                     />
                     <Legend wrapperStyle={{ fontSize: 11, paddingTop: 8 }} />
                     {typeof data.peer_median.pct_within_18_weeks === "number" && (
                       <ReferenceLine
                         y={data.peer_median.pct_within_18_weeks}
-                        stroke="#64748b"
+                        stroke="#5f6b82"
                         strokeDasharray="4 4"
                         label={{
                           value: "Peer median (18w)",
                           fontSize: 9,
-                          fill: "#475569",
+                          fill: "#3d4759",
                           position: "right",
                         }}
                       />
@@ -466,14 +466,14 @@ export default function ComparePage() {
                     <Bar
                       dataKey="within18"
                       name="Within 18 weeks"
-                      fill="#047857"
+                      fill="#007f3b"
                       radius={[3, 3, 0, 0]}
                       isAnimationActive={false}
                     />
                     <Bar
                       dataKey="priority"
                       name="Priority score"
-                      fill="#1d4ed8"
+                      fill="#005eb8"
                       radius={[3, 3, 0, 0]}
                       isAnimationActive={false}
                     />

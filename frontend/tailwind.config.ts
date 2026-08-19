@@ -33,22 +33,26 @@ const config: Config = {
           subtle: "#5f6b82",
           inverse: "#f5f8fc",
         },
+        // NHS-inspired blue family. #005EB8 is the recognisable primary,
+        // #003087 the deep emphasis blue, #0072CE the interactive tint.
+        // This is a design-language reference, not official NHS branding.
         brand: {
-          50: "#eff6ff",
-          100: "#dbeafe",
-          200: "#bfdbfe",
-          500: "#3b82f6",
-          600: "#2563eb",
-          700: "#1d4ed8",
-          800: "#1e40af",
-          900: "#1e3a8a",
+          50: "#eef5fb",
+          100: "#d9eaf7",
+          200: "#b9d9f0",
+          500: "#0072ce",
+          600: "#005eb8",
+          700: "#004b9c",
+          800: "#003087",
+          900: "#002357",
         },
         // Priority band palette. Contrast ratios against white verified for
         // the -700 shades used for text (all >= 4.5:1).
         band: {
-          low: "#047857",
-          lowBg: "#ecfdf5",
-          lowBorder: "#a7f3d0",
+          // Positive green drawn from the NHS green family.
+          low: "#00662f",
+          lowBg: "#e9f4ed",
+          lowBorder: "#a9d5ba",
           moderate: "#a16207",
           moderateBg: "#fefce8",
           moderateBorder: "#fde68a",
