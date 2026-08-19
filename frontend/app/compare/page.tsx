@@ -136,7 +136,8 @@ export default function ComparePage() {
   return (
     <div className="mx-auto max-w-[1600px] space-y-5 px-4 py-6 sm:px-6">
       <header>
-        <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+        <p className="label text-brand-700">Peer benchmarking</p>
+        <h1 className="mt-1 text-xl font-bold tracking-tight text-ink sm:text-2xl">
           Provider comparison
         </h1>
         <p className="mt-1 text-sm text-ink-muted">

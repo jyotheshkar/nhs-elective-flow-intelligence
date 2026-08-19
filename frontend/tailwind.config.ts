@@ -18,17 +18,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        // Blue / white / black light-mode palette.
+        // Surfaces are pure white on a faint blue-tinted ground; text is
+        // near-black with a cool undertone; blue is the single accent hue.
         surface: {
           DEFAULT: "#ffffff",
-          subtle: "#f8fafc",
-          muted: "#f1f5f9",
-          border: "#e2e8f0",
+          subtle: "#f5f8fc",
+          muted: "#ecf1f8",
+          border: "#dbe3ef",
         },
         ink: {
-          DEFAULT: "#0f172a",
-          muted: "#475569",
-          subtle: "#64748b",
-          inverse: "#f8fafc",
+          DEFAULT: "#0a0f1e",
+          muted: "#3d4759",
+          subtle: "#5f6b82",
+          inverse: "#f5f8fc",
         },
         brand: {
           50: "#eff6ff",

@@ -22,6 +22,8 @@ export default function SiteHeader({ provenance }: Props) {
 
   return (
     <header className="sticky top-0 z-40 border-b border-surface-border bg-surface/95 backdrop-blur">
+      {/* Blue identity bar: the one place the brand hue runs full-bleed. */}
+      <div aria-hidden="true" className="h-1 bg-gradient-to-r from-brand-900 via-brand-600 to-brand-900" />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:absolute focus:left-3 focus:top-3 focus:z-50 focus:rounded focus:bg-brand-700 focus:px-3 focus:py-2 focus:text-sm focus:text-white"
@@ -33,7 +35,7 @@ export default function SiteHeader({ provenance }: Props) {
         <Link href="/" className="flex items-center gap-2.5">
           <span
             aria-hidden="true"
-            className="flex h-7 w-7 items-center justify-center rounded bg-brand-800 text-xs font-bold text-white"
+            className="flex h-8 w-8 items-center justify-center rounded-md bg-gradient-to-br from-brand-600 to-brand-900 text-xs font-bold tracking-tight text-white shadow-sm"
           >
             EF
           </span>

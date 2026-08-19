@@ -42,7 +42,8 @@ export default function MethodologyPage() {
   return (
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <header className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">
+        <p className="label text-brand-700">Methodology</p>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight text-ink">
           How it works
         </h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-muted">

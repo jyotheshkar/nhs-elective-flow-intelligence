@@ -403,6 +403,9 @@ python scripts/build_warehouse.py --offline     # rebuild from cached files
 make dev
 ```
 
+On Windows you can instead **double-click `start.bat`** in the repository root — it
+starts both servers and opens the dashboard in your browser.
+
 | | |
 |---|---|
 | Dashboard | http://localhost:3000 |

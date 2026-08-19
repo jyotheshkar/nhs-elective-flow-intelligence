@@ -29,7 +29,8 @@
 
 @layer components {
   .card {
-    @apply rounded-lg border border-surface-border bg-surface shadow-card;
+    @apply rounded-lg border border-surface-border bg-surface shadow-card
+           transition-shadow duration-150 hover:shadow-raised;
   }
 
   .card-header {
@@ -76,7 +77,7 @@
 
   /* Skeleton shimmer for loading states. */
   .skeleton {
-    @apply animate-pulse rounded bg-slate-200;
+    @apply animate-pulse rounded bg-surface-muted;
   }
 }
 

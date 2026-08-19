@@ -108,7 +108,10 @@ export default function ControlRoomPage() {
       <header>
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+            <p className="label text-brand-700">
+              Operational decision intelligence
+            </p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight text-ink sm:text-3xl">
               Elective Flow Control Room
             </h1>
             <p className="mt-1 text-sm text-ink-muted">

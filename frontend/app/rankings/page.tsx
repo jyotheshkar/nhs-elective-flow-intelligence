@@ -108,7 +108,8 @@ export default function RankingsPage() {
     <div className="mx-auto max-w-[1600px] space-y-5 px-4 py-6 sm:px-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-ink sm:text-2xl">
+          <p className="label text-brand-700">Benchmark and export</p>
+          <h1 className="mt-1 text-xl font-bold tracking-tight text-ink sm:text-2xl">
             Service rankings
           </h1>
           <p className="mt-1 text-sm text-ink-muted">
