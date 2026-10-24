@@ -96,7 +96,7 @@ sequenceDiagram
     BW->>NHS: discover + download 54 workbooks
     NHS-->>BW: ~350 MB xlsx
     BW->>BW: parse · validate · clean · assemble star schema
-    BW->>BW: derive metrics (62,744 rows)
+    BW->>BW: derive metrics (72,956 rows)
     BW->>BW: forecast 3,565 series with backtesting
     BW->>BW: score priority · run quality checks
     BW->>DW: write Parquet + materialise DuckDB views
@@ -197,7 +197,7 @@ them would have understated the national position by ~33%.
 | Object | Type | Purpose |
 |---|---|---|
 | `dim_provider`, `dim_specialty`, `dim_date` | table | Conformed dimensions |
-| `fact_rtt` | table | Canonical facts, 62,744 rows |
+| `fact_rtt` | table | Canonical facts, 72,956 rows |
 | `fact_rtt_metrics` | table | Facts + ~30 derived longitudinal metrics |
 | `fact_forecast` | table | One row per series: model, horizons, intervals, backtest |
 | `fact_priority` | table | Latest month, scored and decomposed |
@@ -240,7 +240,7 @@ changing those two modules — not the API or the analytics.
 
 ### Why not Spark / Kafka / Kubernetes
 
-The dataset is 62,744 rows. Distributed processing, streaming and orchestration would
+The dataset is 72,956 rows. Distributed processing, streaming and orchestration would
 be infrastructure theatre — complexity that adds no analytical credibility and obscures
 the reasoning the project is meant to demonstrate.
 
@@ -249,7 +249,7 @@ the reasoning the project is meant to demonstrate.
 Each series has 12–24 monthly observations. A neural or gradient-boosted forecaster
 would overfit and, more importantly, could not be challenged in an operational meeting.
 Four interpretable models competing on out-of-sample error is both more honest and more
-useful. The finding that a naive benchmark wins 43% of the time is only *legible*
+useful. The finding that the naive-drift candidate is selected 43% of the time is only *legible*
 because the models are simple.
 
 ---
@@ -301,7 +301,7 @@ audit log with its error and skipped, rather than aborting an otherwise successf
 | Layer | Strategy | Rationale |
 |---|---|---|
 | Reference data, snapshot, metadata | `functools.lru_cache`, process lifetime | Warehouse is immutable between builds |
-| Quality report | `lru_cache`, warmed at startup | ~4 s over 63k rows; unacceptable per request |
+| Quality report | `lru_cache`, warmed at startup | ~4 s over 73k rows; unacceptable per request |
 | Service/provider history | Bounded dict (800 entries) | Browsing working set is small; bounded so a crawler cannot grow it without limit |
 | Frontend | `cache: "no-store"` | Analytics must reflect the current build |
 

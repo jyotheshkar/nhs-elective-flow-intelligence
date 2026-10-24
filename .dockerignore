@@ -16,3 +16,9 @@ docs/screenshots
 .env.local
 *.md
 !README.md
+
+.runtime-packages
+.wheels
+qa
+bi/export
+infra/aws/.test-tmp

@@ -1,0 +1,78 @@
+// Create these as individual measures in Power BI Desktop.
+// Fact snapshots cannot be added across months. Use DimDate[month_key] as
+// a single-select slicer; trend chart axis must contain reporting_month.
+// Hide raw numeric fact columns so report authors use explicit measures.
+
+Waiting List =
+IF (
+    HASONEVALUE ( DimDate[reporting_month] ),
+    SUM ( FactRTT[total_incomplete_pathways] )
+)
+
+Completed Activity =
+SUM ( FactRTT[completed_pathways] )
+
+Within 18 Weeks % =
+VAR CompletePairs =
+    FILTER (
+        FactRTT,
+        NOT ISBLANK ( FactRTT[within_18_weeks] )
+            && NOT ISBLANK ( FactRTT[total_incomplete_pathways] )
+            && FactRTT[total_incomplete_pathways] > 0
+    )
+RETURN
+    IF (
+        HASONEVALUE ( DimDate[reporting_month] ),
+        DIVIDE (
+            SUMX ( CompletePairs, FactRTT[within_18_weeks] ),
+            SUMX ( CompletePairs, FactRTT[total_incomplete_pathways] )
+        )
+    )
+
+Over 52 Weeks =
+IF (
+    HASONEVALUE ( DimDate[reporting_month] ),
+    SUM ( FactRTT[over_52_weeks] )
+)
+
+Missing 18 Week Count Rows =
+IF (
+    HASONEVALUE ( DimDate[reporting_month] ),
+    COUNTROWS (
+        FILTER (
+            FactRTT,
+            ISBLANK ( FactRTT[within_18_weeks] )
+                || ISBLANK ( FactRTT[total_incomplete_pathways] )
+        )
+    )
+)
+
+Priority Score =
+IF (
+    HASONEVALUE ( DimProvider[provider_code] )
+        && HASONEVALUE ( DimSpecialty[specialty_code] )
+        && HASONEVALUE ( DimDate[reporting_month] ),
+    MAX ( FactPriority[priority_score] )
+)
+
+High Priority Services =
+IF (
+    HASONEVALUE ( DimDate[reporting_month] ),
+    COUNTROWS (
+        FILTER (
+            FactPriority,
+            FactPriority[is_rankable] = TRUE ()
+                && FactPriority[priority_band] IN { "HIGH", "CRITICAL" }
+        )
+    )
+)
+
+Data Source =
+SELECTEDVALUE ( BuildMetadata[data_source_type], "CHECK SOURCE" )
+
+Reporting Period Label =
+SELECTEDVALUE ( DimDate[month_key], "Select exactly one reporting month" )
+
+// Format Within 18 Weeks % as 0.0%, not as a whole number.
+// Never average specialty percentages or add stock measures across months.
+// No NHS target is hardcoded: use BuildMetadata benchmark if displaying it.

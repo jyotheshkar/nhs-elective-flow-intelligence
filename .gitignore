@@ -50,3 +50,10 @@ Thumbs.db
 .idea/
 .vscode/
 *.swp
+
+# Local verification dependencies and scratch
+.runtime-packages/
+.wheels/
+qa/*test-tmp/
+qa/import-debug.log
+infra/aws/.test-tmp/

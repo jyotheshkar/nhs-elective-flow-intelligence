@@ -1,0 +1,18 @@
+{
+  "checked_at": "2026-10-24",
+  "reference_commit": "3d75530331dcaa86cb90c7395e79c763bf9ca5d2",
+  "backend": {
+    "collected": 209,
+    "passed": 208,
+    "skipped": 1,
+    "errors": 0,
+    "failures": 0
+  },
+  "aws_extension": {
+    "tests_passed": 17,
+    "deployed": false
+  },
+  "native_power_bi_validated": false,
+  "postman_executed": false,
+  "fresh_nhs_ingestion_executed": false
+}

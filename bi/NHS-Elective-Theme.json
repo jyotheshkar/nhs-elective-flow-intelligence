@@ -1,0 +1,14 @@
+{
+  "name": "Elective Flow Portfolio",
+  "dataColors": [
+    "#005EB8",
+    "#007F3B",
+    "#ED8B00",
+    "#AE2573",
+    "#425563",
+    "#41B6E6"
+  ],
+  "background": "#FFFFFF",
+  "foreground": "#212B32",
+  "tableAccent": "#005EB8"
+}
