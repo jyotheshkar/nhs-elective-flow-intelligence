@@ -1,0 +1,218 @@
+{
+  "generated_at_utc": "2026-10-24T08:00:01.314051+00:00",
+  "scope": "Independent portfolio technical verification; not clinical validation",
+  "table_rows": {
+    "dim_provider": 155,
+    "dim_specialty": 23,
+    "dim_date": 21,
+    "fact_rtt": 72956,
+    "fact_rtt_metrics": 72956,
+    "fact_forecast": 3565,
+    "fact_priority": 3404,
+    "fact_quality_issues": 1104,
+    "dim_provider_quality": 155,
+    "ingestion_audit": 63,
+    "warehouse_metadata": 1
+  },
+  "checks": [
+    {
+      "id": "required_tables",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "nonempty_facts",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "grain_unique",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "grain_not_null",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "no_aggregate_specialty",
+      "passed": true,
+      "violations": 0,
+      "detail": "Total rows would double count specialties"
+    },
+    {
+      "id": "dimension_provider_unique",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "dimension_specialty_unique",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "provider_integrity",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "specialty_integrity",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "date_integrity",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "valid_counts",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "valid_source_marker",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "single_source_mode",
+      "passed": true,
+      "detail": [
+        {
+          "data_source_type": "OFFICIAL_NHS_PUBLIC",
+          "rows": 72956
+        }
+      ]
+    },
+    {
+      "id": "expected_source",
+      "passed": true,
+      "violations": 0,
+      "detail": "OFFICIAL_NHS_PUBLIC"
+    },
+    {
+      "id": "metadata_fact_count",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "one_metadata_row",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    },
+    {
+      "id": "priority_bounds",
+      "passed": true,
+      "violations": 0,
+      "detail": ""
+    }
+  ],
+  "coverage": {
+    "latest_month": "2026-06-01T00:00:00",
+    "earliest_month": "2024-10-01T00:00:00",
+    "reporting_months": 21,
+    "providers": 155,
+    "specialties": 23
+  },
+  "source_modes": [
+    {
+      "data_source_type": "OFFICIAL_NHS_PUBLIC",
+      "rows": 72956
+    }
+  ],
+  "latest_month_kpis": {
+    "services": 3404,
+    "waiting_pathways": 6693433.0,
+    "within_18_pathways": 4359731.0,
+    "weighted_within_18_pct": 65.13445342621641,
+    "over_52_pathways": 100029.0
+  },
+  "metadata": [
+    {
+      "app_version": "1.0.0",
+      "built_at": "2026-08-19T10:25:01.233349+00:00",
+      "data_source_type": "OFFICIAL_NHS_PUBLIC",
+      "data_mode": "official",
+      "latest_reporting_month": "2026-06",
+      "reporting_months": 21,
+      "provider_count": 155,
+      "specialty_count": 23,
+      "fact_rows": 72956,
+      "quality_score": 94.9,
+      "forecast_series_ok": 2078,
+      "forecast_series_insufficient": 1487,
+      "forecast_median_mape": 3.68,
+      "forecast_share_beating_naive": 54.8,
+      "referral_to_treatment_benchmark": 92.0,
+      "min_waiting_list_for_ranking": 200,
+      "build_messages": ""
+    }
+  ],
+  "forecast_models": [
+    {
+      "forecast_status": "insufficient_history",
+      "forecast_model": null,
+      "series": 1487
+    },
+    {
+      "forecast_status": "ok",
+      "forecast_model": "naive_drift",
+      "series": 901
+    },
+    {
+      "forecast_status": "ok",
+      "forecast_model": "damped_trend",
+      "series": 502
+    },
+    {
+      "forecast_status": "ok",
+      "forecast_model": "linear_trend_6m",
+      "series": 274
+    },
+    {
+      "forecast_status": "ok",
+      "forecast_model": "holt_linear",
+      "series": 208
+    },
+    {
+      "forecast_status": "ok",
+      "forecast_model": "linear_trend",
+      "series": 193
+    }
+  ],
+  "forecast_backtest_summary": {
+    "forecastable_series": 2078,
+    "median_mape_pct": 3.6821237997990544,
+    "pct_beating_no_change": 54.76419634263715
+  },
+  "ingestion_status": [
+    {
+      "processing_status": "processed",
+      "files": 63
+    }
+  ],
+  "caveats": [
+    "Counts are pathways, not unique patients.",
+    "Published aggregate data only; no patient-level validity or outcomes claim.",
+    "One-step model-selection backtests are not independent held-out multi-horizon performance.",
+    "Source publication correctness is outside this technical check.",
+    "A passed integrity check does not establish completeness against every expected source workbook."
+  ],
+  "passed": true,
+  "warehouse_sha256": "ef9d54dc0c576f8bc23963cac00078edbc31a64bfca69f76c462ca27612e14d9",
+  "warehouse_file": "warehouse.duckdb"
+}

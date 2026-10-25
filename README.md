@@ -68,8 +68,7 @@ workbooks, builds a reproducible analytical warehouse, and produces:
   can answer *"why this score?"* with the actual numbers behind it. No black box.
 - **Honest short-horizon forecasting** — four interpretable models compete on
   rolling-origin out-of-sample error. The winner is refit and reported with a
-  confidence label derived from backtest accuracy, not in-sample fit. On the loaded
-  data a naive benchmark wins **43% of the time**, and that is published rather than
+  confidence label derived from backtest accuracy, not in-sample fit. On the reference build, the naive-drift candidate is selected **43% of the time**, and that is published rather than
   hidden.
 - **Illustrative capacity scenarios** — an accounting projection that tests what a 5 /
   10 / 15 / 20% activity uplift would do to the modelled backlog, plus the uplift
@@ -146,7 +145,7 @@ flowchart TD
     Q --> R["Next.js UI<br/>Elective Flow Control Room"]
 ```
 
-Expensive work (forecasting every series, quality checks over 63k rows) happens **once
+Expensive work (forecasting every series, quality checks over 73k rows) happens **once
 at build time**. The API only reads precomputed tables, so the dashboard is fast.
 
 See [docs/architecture.md](docs/architecture.md) for component detail and design
@@ -301,8 +300,7 @@ method in an operational meeting.
 | Confidence: High / Moderate / Low | 779 / 1,029 / 270 |
 | Most-selected model | `naive_drift` (901 series, 43%) |
 
-That a no-change benchmark wins 43% of the time is a genuine finding about slow-moving
-waiting-list series, and it is surfaced in the product rather than buried.
+That the naive-drift candidate is selected 43% of the time is a finding about this reference build, and it is surfaced in the product rather than buried.
 
 ---
 
@@ -614,3 +612,13 @@ CSV exports carry this notice in their header.
 affiliated with or endorsed by NHS England. Source: NHS England, Consultant-led
 Referral to Treatment Waiting Times. Contains public sector information licensed under
 the Open Government Licence v3.0.*
+
+
+## AWS, BI and verification extension (24 October 2026)
+
+- [AWS architecture and staged deployment](docs/aws/README.md): editable diagram, CloudFormation, candidate release worker, six-pillar review, cost model and recovery runbook. Prepared and locally checked; not deployed to AWS.
+- [Power BI import kit](docs/bi.md): validated CSV exporter, typed Power Query queries, DAX measures and assessment exercises. Native Power BI Desktop report has not been created or validated.
+- [Risk-based QA pack](qa/README.md): Postman collection, traceability, manual charters and warehouse verification. See [verification report](docs/Verification-Report.md) for executed checks and limitations.
+- [Operational case study](docs/Operational-Case-Study.md): a five-minute demonstration narrative grounded in the committed reference snapshot.
+
+The checked snapshot ends in June 2026. It is a dated portfolio reference, not a claim to contain the latest NHS publication as of October 2026. Original published model-selection results are not independently held-out forecast guarantees. The naive-drift candidate and the no-change evaluation benchmark are different models.

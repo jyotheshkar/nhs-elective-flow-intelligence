@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="AWS Public Statistics Architecture" id="nhs-aws">
+    <mxGraphModel dx="1280" dy="1040" grid="1" page="1" pageWidth="1280" pageHeight="1040">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="source" value="NHS England RTT publications&#10;Monthly public aggregate workbooks" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#162331;strokeColor=#668195;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="140" width="300" height="105" />
+        </mxCell>
+        <mxCell id="schedule" value="Amazon EventBridge Scheduler&#10;Weekly discovery; Europe/London" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#102d3b;strokeColor=#35c5df;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="460" y="140" width="300" height="105" />
+        </mxCell>
+        <mxCell id="ecr" value="Amazon ECR&#10;Immutable-tagged workload image" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#102d3b;strokeColor=#35c5df;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="860" y="140" width="300" height="105" />
+        </mxCell>
+        <mxCell id="batch" value="Amazon ECS on AWS Fargate&#10;Python ingestion + analytics build" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#34251b;strokeColor=#f0a34b;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="460" y="340" width="300" height="120" />
+        </mxCell>
+        <mxCell id="s3" value="Amazon S3&#10;Private versioned raw + releases" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#17342b;strokeColor=#62c59b;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="560" width="300" height="120" />
+        </mxCell>
+        <mxCell id="gate" value="Operator release review&#10;Pin approved ReleaseId via CloudFormation" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#322a43;strokeColor=#b19bdc;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="460" y="560" width="300" height="120" />
+        </mxCell>
+        <mxCell id="api" value="AWS App Runner&#10;FastAPI + local read-only DuckDB" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#34251b;strokeColor=#f0a34b;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="860" y="560" width="300" height="120" />
+        </mxCell>
+        <mxCell id="ui" value="Vercel / Next.js&#10;Existing dashboard; external hosting" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#162331;strokeColor=#668195;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="860" y="800" width="300" height="105" />
+        </mxCell>
+        <mxCell id="monitor" value="CloudWatch + EventBridge + Amazon SNS&#10;Build logs, refresh failures, task-stop notifications" style="rounded=1;whiteSpace=wrap;html=0;fillColor=#102d3b;strokeColor=#35c5df;fontColor=#f4f7fb;fontSize=16;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="800" width="700" height="105" />
+        </mxCell>
+        <mxCell id="edge0" value="HTTPS download" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="source" target="batch">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge1" value="ECS RunTask" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="schedule" target="batch">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge2" value="Pull image" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="ecr" target="batch">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge3" value="Validated artifacts + hashes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="batch" target="s3">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge4" value="Manifest / evidence review" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="s3" target="gate">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge5" value="Deploy approved ID" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="gate" target="api">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge6" value="Download pinned snapshot" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="s3" target="api">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge7" value="HTTPS JSON" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="api" target="ui">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge8" value="Logs + task state" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=0;endArrow=block;fontSize=13;" edge="1" parent="1" source="batch" target="monitor">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

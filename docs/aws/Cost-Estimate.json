@@ -1,0 +1,61 @@
+{
+  "status": "ILLUSTRATIVE_PLANNING_ESTIMATE_NOT_A_QUOTE",
+  "inputs": {
+    "comparison_region": "eu-west-1",
+    "deployment_region": "eu-west-2",
+    "month_hours": 730,
+    "api_vcpu": 1,
+    "api_gb": 2,
+    "active_hours": 30,
+    "api_gb_hour_published_ireland": 0.007,
+    "api_vcpu_hour_published_ireland": 0.064,
+    "batch_runs": 5,
+    "batch_minutes_per_run": 20,
+    "batch_vcpu": 1,
+    "batch_gb": 4,
+    "batch_vcpu_hour_PLANNING_ASSUMPTION": 0.06,
+    "batch_gb_hour_PLANNING_ASSUMPTION": 0.007,
+    "s3_gb": 10,
+    "s3_gb_month_PLANNING_ASSUMPTION": 0.03,
+    "ecr_gb": 2,
+    "ecr_gb_month_published_example": 0.1,
+    "public_ipv4_hour_published": 0.005,
+    "logs_metrics_alarms_notifications_month_PLANNING_ALLOWANCE": 3.0,
+    "requests_and_egress_month_PLANNING_ALLOWANCE": 1.0
+  },
+  "low_traffic_30_active_hours": {
+    "USD_per_month": {
+      "API provisioned memory": 10.22,
+      "API active CPU": 1.92,
+      "Batch CPU and RAM": 0.1467,
+      "Batch public IPv4": 0.0083,
+      "S3 stored bytes": 0.3,
+      "ECR images": 0.2,
+      "Monitoring and notifications allowance": 3.0,
+      "Requests and egress allowance": 1.0
+    },
+    "total_USD_before_tax": 16.8
+  },
+  "continuously_active_sensitivity": {
+    "USD_per_month": {
+      "API provisioned memory": 10.22,
+      "API active CPU": 46.72,
+      "Batch CPU and RAM": 0.1467,
+      "Batch public IPv4": 0.0083,
+      "S3 stored bytes": 0.3,
+      "ECR images": 0.2,
+      "Monitoring and notifications allowance": 3.0,
+      "Requests and egress allowance": 1.0
+    },
+    "total_USD_before_tax": 61.59
+  },
+  "excludes": [
+    "tax",
+    "currency conversion",
+    "support",
+    "additional deployments",
+    "extra storage versions",
+    "unexpected traffic beyond allowances"
+  ],
+  "warning": "London rates not independently captured. Replace pricing inputs in AWS Pricing Calculator before deploying."
+}
