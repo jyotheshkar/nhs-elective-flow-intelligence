@@ -18,7 +18,10 @@ ARG NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 ENV NEXT_PUBLIC_API_BASE_URL=$NEXT_PUBLIC_API_BASE_URL
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN npm run build
+# App Router assets (for example app/icon.svg) do not require a public/ folder.
+# Keep the runtime COPY valid when there are no public assets, while preserving
+# any public files added later.
+RUN mkdir -p public && npm run build
 
 # --- Runtime -----------------------------------------------------------------
 FROM node:22-alpine AS runner

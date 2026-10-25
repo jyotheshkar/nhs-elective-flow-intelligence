@@ -10,17 +10,22 @@ forecasting and capacity scenario modelling.
 > NHS England or any NHS organisation. Not a clinical decision support, triage or
 > diagnosis system. Uses only aggregate, published, non-patient-identifiable statistics.
 
-## Live demo
+## Demo and deployment status
 
-| | |
-|---|---|
-| **Application** | https://nhs-elective-flow-intelligence.vercel.app |
-| **API docs (OpenAPI)** | https://nhs-elective-flow-api.onrender.com/docs |
-| **API health** | https://nhs-elective-flow-api.onrender.com/health |
+The repository records a frontend deployment on 19 August 2026. That deployment
+commit explicitly states that the backend was not yet hosted. The Render blueprint
+and configured API URL are deployment preparation, not evidence of a running API.
+Current end-to-end availability has not been verified for this revision.
 
-> The backend runs on a free tier that sleeps after inactivity — the first request
-> after a quiet period can take up to a minute while the service wakes. The frontend
-> retries automatically and says so rather than appearing broken.
+| Component | URL | Evidence status |
+|---|---|---|
+| Frontend | https://nhs-elective-flow-intelligence.vercel.app | Deployment recorded; current availability unverified |
+| API docs (configured destination) | https://nhs-elective-flow-api.onrender.com/docs | Backend deployment unverified |
+| API health (configured destination) | https://nhs-elective-flow-api.onrender.com/health | Check before presenting a working full-stack demo |
+
+The frontend retries GET requests and displays unavailable-data states. Those
+behaviours also apply when a backend is absent; a loading or retry state does not
+prove that a sleeping service will eventually respond.
 
 ---
 
@@ -160,6 +165,17 @@ rationale.
 | **Scale** | 155 providers · 23 treatment functions · 72,956 fact rows |
 | **Licence** | Open Government Licence v3.0 |
 | **PII** | None. Aggregate published statistics only. |
+
+The repository includes a processed aggregate snapshot in `data/processed/`:
+dimension and RTT tables, plus application-derived metrics, forecasts, priority
+scores, quality results, ingestion audit and metadata. Raw source workbooks are
+excluded. The separately labelled `data/sample/` files are synthetic examples.
+`scripts/materialise_warehouse.py` rebuilds DuckDB from the committed Parquet
+files without downloading the source workbooks.
+
+The source-code licence does not grant rights to third-party data. The existing
+data attribution is retained; source terms, attribution completeness and
+redistribution rights still require review before further data reuse or release.
 
 Three workbooks are ingested per reporting month: **incomplete pathways** (the waiting
 list), **completed admitted pathways** and **completed non-admitted pathways**.
@@ -360,10 +376,10 @@ repository module, so PostgreSQL could replace it without touching the API.
 
 ## Running locally
 
-**Prerequisites:** Python 3.11+, Node 20+
+**Prerequisites:** Python 3.11+, Node 22 (matching the frontend Docker image)
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/jyotheshkar/nhs-elective-flow-intelligence.git
 cd nhs-elective-flow-intelligence
 ```
 
@@ -436,10 +452,12 @@ cd frontend && npm run dev
 ```
 </details>
 
-### Hosted deployment (free tier)
+### Hosted deployment configuration
 
-The production architecture is **Vercel (frontend) + Render (backend)**, both on
-free plans:
+The configured target is **Vercel (frontend) + Render (backend)**. The repository
+contains a frontend deployment record and a Render backend blueprint; it does not
+establish a currently working end-to-end deployment. No deployment is performed by
+these setup instructions.
 
 - **Backend — Render web service.** [`render.yaml`](render.yaml) is a one-click
   blueprint. The analytical warehouse is materialised **at build time** from the
@@ -450,9 +468,11 @@ free plans:
 - **Frontend — Vercel.** Project root `frontend/`, with
   `NEXT_PUBLIC_API_BASE_URL` pointing at the Render service. The API client
   retries GET requests with backoff to absorb free-tier cold starts.
-- **Refreshing the hosted data** is a rebuild, not a server job: run
-  `make data` locally when NHS England publishes a new month, commit the updated
-  `data/processed/*.parquet`, and push — both hosts redeploy from Git.
+- **Refreshing the hosted data** is a separate ingestion and rebuild operation.
+  Review the publisher's current terms and attribution requirements, run `make data`
+  locally when a refresh is intended, inspect the resulting provenance and derived
+  outputs, and review any updated `data/processed/*.parquet` before committing.
+  Host redeployment depends on an independently configured deployment connection.
 
 ### Docker
 
@@ -511,7 +531,7 @@ curl -X POST http://localhost:8000/api/v1/scenario \
 ## Tests
 
 ```bash
-make test          # 188 backend tests
+make test          # backend unit and API tests
 make lint          # ruff + ESLint
 make typecheck     # TypeScript strict
 make check         # everything
@@ -529,8 +549,14 @@ make the product trustworthy:
 - **Sort columns are allow-listed** (a `sort_by` injection attempt returns 422)
 - **No fabricated performance claims** appear in generated prose
 
-Warehouse-dependent API tests skip themselves when no warehouse is built, so the suite
-runs green on a clean checkout in CI.
+Warehouse-dependent API tests skip themselves when no warehouse is built. CI runs
+the suite first on a clean checkout, then again after the synthetic demo pipeline
+and warehouse materialisation. Those backend checks passed in the inspected
+historical runs; the overall workflow failed during the frontend Docker image
+build because an optional `public/` directory was absent. The Dockerfile now
+creates that directory before building. A new CI run is required to verify the
+corrected image build; historical passing tests do not establish a green current
+workflow.
 
 ---
 
