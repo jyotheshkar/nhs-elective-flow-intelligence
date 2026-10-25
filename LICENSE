@@ -38,8 +38,17 @@ Required attribution when reusing the data:
     Contains public sector information licensed under the Open Government
     Licence v3.0.
 
-No NHS England data is redistributed in this repository. Source workbooks are
-downloaded at build time from the official publication pages.
+This repository includes processed aggregate RTT data and application-derived
+analytical tables in data/processed/. Raw NHS England source workbooks are
+excluded. The separate data/sample/ examples are synthetic.
+
+scripts/materialise_warehouse.py recreates DuckDB from the committed Parquet
+files without downloading source workbooks. Refreshing the official inputs is
+a separate ingestion operation.
+
+The source-code licence does not grant rights to third-party data. Retaining
+the attribution above does not itself establish that all source terms and
+redistribution requirements have been reviewed.
 
 This project is an independent portfolio prototype. It is not affiliated with,
 endorsed by, or connected to NHS England or any NHS organisation.
