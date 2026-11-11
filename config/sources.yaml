@@ -81,4 +81,6 @@ ingestion:
   max_months: 36
   request_timeout_seconds: 300
   max_retries: 3
+  # Bound streamed bytes per workbook; retries cannot fill disk indefinitely.
+  max_download_bytes: 134217728
   user_agent: "nhs-elective-flow-intelligence/1.0 (portfolio project; +https://github.com/)"
