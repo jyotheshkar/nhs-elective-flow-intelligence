@@ -353,7 +353,7 @@ nhs-elective-flow-intelligence/
 │   │   ├── models/              # Pydantic schemas
 │   │   ├── sql/views.sql        # analytical views
 │   │   └── utils/               # logging, mathx
-│   └── tests/                   # 188 tests
+│   └── tests/                   # unit and integration tests
 ├── frontend/
 │   ├── app/                     # App Router pages
 │   ├── components/              # UI + charts
