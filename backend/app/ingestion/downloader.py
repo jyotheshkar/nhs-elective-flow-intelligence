@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import hashlib
+import tempfile
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -48,6 +49,10 @@ def download_file(
 ) -> DownloadResult:
     """Download one discovered file into ``data/raw``, reusing a valid cache."""
     settings = get_settings()
+    # Source metadata must never be able to choose a path outside raw_dir.
+    for label, value in (("dataset", discovered.dataset), ("filename", discovered.filename)):
+        if not value or value in {".", ".."} or "/" in value or "\\" in value:
+            raise ValueError(f"{label} must be a single path component")
     settings.ensure_directories()
     target_dir = settings.raw_dir / discovered.dataset
     target_dir.mkdir(parents=True, exist_ok=True)
@@ -70,9 +75,14 @@ def download_file(
             status="cached",
         )
 
-    max_retries = get_source_config().get("ingestion", {}).get("max_retries", 3)
+    config = get_source_config().get("ingestion", {})
+    max_retries = max(1, int(config.get("max_retries", 3)))
+    max_bytes = int(config.get("max_download_bytes", 128 * 1024 * 1024))
+    if max_bytes <= 0:
+        raise ValueError("max_download_bytes must be positive")
     last_error = ""
     for attempt in range(1, max_retries + 1):
+        tmp = None
         try:
             logger.info(
                 "Downloading %s (attempt %d/%d)",
@@ -81,12 +91,22 @@ def download_file(
             # Stream to disk: the incomplete-pathway workbooks are ~10 MB each.
             with client.stream("GET", discovered.url) as response:
                 response.raise_for_status()
-                tmp = target.with_suffix(target.suffix + ".part")
-                with tmp.open("wb") as fh:
+                # A unique sibling keeps concurrent attempts from sharing a
+                # partial file, and replace remains atomic on this filesystem.
+                with tempfile.NamedTemporaryFile(
+                    dir=target_dir, prefix=f".{target.name}.", suffix=".part", delete=False,
+                ) as fh:
+                    tmp = Path(fh.name)
+                    size = 0
                     for chunk in response.iter_bytes(chunk_size=512 * 1024):
+                        size += len(chunk)
+                        if size > max_bytes:
+                            raise OSError(f"Download exceeds {max_bytes} byte limit")
                         fh.write(chunk)
+            if size == 0:
+                raise OSError("Downloaded file is empty")
+            checksum = _sha256(tmp)
             tmp.replace(target)
-            size = target.stat().st_size
             return DownloadResult(
                 dataset=discovered.dataset,
                 reporting_month=discovered.month_key,
@@ -95,12 +115,15 @@ def download_file(
                 local_path=target,
                 downloaded_at=now,
                 bytes_downloaded=size,
-                checksum_sha256=_sha256(target),
+                checksum_sha256=checksum,
                 status="downloaded",
             )
         except (httpx.HTTPError, OSError) as exc:
             last_error = f"{type(exc).__name__}: {exc}"
             logger.warning("Download failed (%s): %s", discovered.filename, last_error)
+        finally:
+            if tmp is not None:
+                tmp.unlink(missing_ok=True)
 
     return DownloadResult(
         dataset=discovered.dataset,

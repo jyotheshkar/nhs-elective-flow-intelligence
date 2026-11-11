@@ -1,5 +1,7 @@
 # NHS Elective Flow Intelligence
 
+[Architecture](docs/architecture.md) · [Maintenance and scaling review](docs/maintenance-and-scaling.md)
+
 **Operational decision intelligence for NHS elective waiting list management using public NHS England data.**
 
 The system converts public elective care data into operational signals by combining

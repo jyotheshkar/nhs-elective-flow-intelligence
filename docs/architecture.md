@@ -1,5 +1,10 @@
 # Architecture
 
+For the 11 November 2026 source review, download failure boundary, capacity limits,
+and maintenance commands, see [Maintenance and scaling](maintenance-and-scaling.md).
+Timings and dataset counts below are historical observations and have not been
+remeasured for this revision.
+
 ## Design goals
 
 1. **Reproducible on a laptop.** A recruiter should clone, run three commands and see
