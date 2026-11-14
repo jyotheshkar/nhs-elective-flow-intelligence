@@ -1,4 +1,24 @@
-# NHS Elective Flow Intelligence
+# NHS Elective Care Decision Intelligence Concept Prototype
+
+<!-- SITES_WEB_EDITION_LINK -->
+
+**Latest web edition:** [interactive website source](web/index.html).
+**Sites publication pending:** the website files are complete, but a live Sites
+deployment has not been established. Run `python -m http.server 8080 --directory web`
+from the repository root to open the website at `http://localhost:8080`.
+
+The **November 2026 web edition** adds an interactive, dark blue scenario explorer,
+transparent assumptions, source provenance and engineering documentation. Its
+browser examples are explicitly synthetic; the original Python analytics, data
+schema and Next.js application remain the full analytical implementation.
+
+- [Web edition source](web/index.html)
+- [Engineering decisions, deployment architecture and verification](docs/web-edition-and-engineering.md)
+- [Original system architecture](docs/architecture.md)
+
+The scenario engine now requires a complete recent three-month activity window.
+Missing observations no longer cause older activity to be silently substituted.
+Regression cases cover missing months, invalid activity and non-finite uplift.
 
 [Architecture](docs/architecture.md) · [Maintenance and scaling review](docs/maintenance-and-scaling.md)
 
@@ -381,8 +401,8 @@ repository module, so PostgreSQL could replace it without touching the API.
 **Prerequisites:** Python 3.11+, Node 22 (matching the frontend Docker image)
 
 ```bash
-git clone https://github.com/jyotheshkar/nhs-elective-flow-intelligence.git
-cd nhs-elective-flow-intelligence
+git clone https://github.com/jyotheshkar/NHS-Elective-Care-Decision-Intelligence-Concept-Prototype.git
+cd NHS-Elective-Care-Decision-Intelligence-Concept-Prototype
 ```
 
 ### 1. Install
@@ -616,3 +636,4 @@ CSV exports carry this notice in their header.
 affiliated with or endorsed by NHS England. Source: NHS England, Consultant-led
 Referral to Treatment Waiting Times. Contains public sector information licensed under
 the Open Government Licence v3.0.*
+

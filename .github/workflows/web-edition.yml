@@ -1,0 +1,26 @@
+name: Web edition checks
+
+on:
+  push:
+    branches: [main]
+    paths: ['web/**', '.github/workflows/web-edition.yml']
+  pull_request:
+    paths: ['web/**', '.github/workflows/web-edition.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  scenario-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate browser scripts
+        run: |
+          node --check web/app.js
+          node --check web/scenario.js
+      - name: Verify scenario invariants
+        run: node --test web/tests/scenario.test.cjs

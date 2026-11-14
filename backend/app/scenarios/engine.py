@@ -86,12 +86,28 @@ _ASSUMPTIONS = [
 
 
 def _recent_activity(history: pd.DataFrame, months: int = 3) -> float:
-    """Mean monthly completed pathways over the most recent months."""
-    ordered = history.sort_values("reporting_month")
-    activity = pd.to_numeric(ordered["completed_pathways"], errors="coerce").dropna()
-    if activity.empty:
+    """Mean over a complete recent calendar window, never stale observations.
+
+    Missing activity is unknown, not zero. Selecting valid values before the
+    window silently substitutes older months, which can overstate available
+    capacity. Require one finite, non-negative observation for each month.
+    """
+    if history.empty or not {"reporting_month", "completed_pathways"}.issubset(history):
         return float("nan")
-    return float(activity.tail(months).mean())
+    periods = pd.to_datetime(
+        history["reporting_month"], errors="coerce"
+    ).dt.to_period("M")
+    if periods.isna().any():
+        return float("nan")
+    expected = pd.period_range(end=periods.max(), periods=months, freq="M")
+    recent = history.loc[periods.isin(expected)]
+    recent_periods = periods.loc[recent.index]
+    if len(recent) != months or recent_periods.nunique() != months:
+        return float("nan")
+    activity = pd.to_numeric(recent["completed_pathways"], errors="coerce")
+    if not np.isfinite(activity).all() or (activity < 0).any():
+        return float("nan")
+    return float(activity.mean())
 
 
 def run_scenario(
@@ -106,6 +122,8 @@ def run_scenario(
     specialty = str(
         history["specialty_code"].iloc[0] if not history.empty else "")
 
+    if not np.isfinite(uplift_pct):
+        raise ValueError("uplift_pct must be finite")
     uplift_pct = float(np.clip(uplift_pct, 0.0, MAX_UPLIFT_PCT))
     row = dict(forecast_row) if forecast_row is not None else {}
 
@@ -136,8 +154,9 @@ def run_scenario(
             additional_monthly_activity=None,
             assumptions=_ASSUMPTIONS,
             message=(
-                "No completed-activity data is published for this service in "
-                "the loaded period, so an activity uplift cannot be modelled."
+                "A complete, valid three-month completed-activity window is "
+                "unavailable or has no activity, so an activity uplift cannot "
+                "be modelled. Older observations are not substituted."
             ),
         )
 
@@ -224,3 +243,4 @@ def run_scenario_set(
 def scenario_assumptions() -> list[str]:
     """The assumption list, surfaced in the UI alongside every scenario."""
     return list(_ASSUMPTIONS)
+
