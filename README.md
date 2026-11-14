@@ -401,8 +401,8 @@ repository module, so PostgreSQL could replace it without touching the API.
 **Prerequisites:** Python 3.11+, Node 22 (matching the frontend Docker image)
 
 ```bash
-git clone https://github.com/jyotheshkar/NHS-Elective-Care-Decision-Intelligence-Concept-Prototype.git
-cd NHS-Elective-Care-Decision-Intelligence-Concept-Prototype
+git clone https://github.com/jyotheshkar/NHS-Elective-Care-Decision-Intelligence-Concept-Prototype-2026.git
+cd NHS-Elective-Care-Decision-Intelligence-Concept-Prototype-2026
 ```
 
 ### 1. Install
@@ -637,3 +637,4 @@ affiliated with or endorsed by NHS England. Source: NHS England, Consultant-led
 Referral to Treatment Waiting Times. Contains public sector information licensed under
 the Open Government Licence v3.0.*
 
+**Year provenance:** The `2026` suffix records this repository's creation year (created 2026-08-19). Later maintenance retains its own dates.
