@@ -126,6 +126,39 @@ class TestScenarioArithmetic:
 
 
 class TestScenarioUnavailable:
+    def test_missing_recent_values_do_not_use_older_activity(
+        self, history, forecast_row
+    ):
+        history.loc[history.index[-3:], "completed_pathways"] = None
+        result = run_scenario(history, forecast_row, uplift_pct=10.0)
+        assert result.status == UNAVAILABLE_NO_ACTIVITY
+        assert result.points == []
+
+    def test_partial_recent_window_is_unavailable(self, history, forecast_row):
+        history.loc[history.index[-1], "completed_pathways"] = None
+        result = run_scenario(history, forecast_row, 10.0)
+        assert result.status == UNAVAILABLE_NO_ACTIVITY
+
+    def test_missing_calendar_month_is_unavailable(self, history, forecast_row):
+        history = history.drop(history.index[-2])
+        result = run_scenario(history, forecast_row, 10.0)
+        assert result.status == UNAVAILABLE_NO_ACTIVITY
+
+    def test_duplicate_recent_month_is_unavailable(self, history, forecast_row):
+        duplicate = pd.concat([history, history.tail(1)], ignore_index=True)
+        result = run_scenario(duplicate, forecast_row, 10.0)
+        assert result.status == UNAVAILABLE_NO_ACTIVITY
+
+    def test_invalid_activity_is_unavailable(self, history, forecast_row):
+        history.loc[history.index[-1], "completed_pathways"] = -1
+        result = run_scenario(history, forecast_row, 10.0)
+        assert result.status == UNAVAILABLE_NO_ACTIVITY
+
+    @pytest.mark.parametrize("uplift", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_uplift_is_rejected(self, history, forecast_row, uplift):
+        with pytest.raises(ValueError, match="must be finite"):
+            run_scenario(history, forecast_row, uplift)
+
     def test_without_a_forecast(self, history):
         result = run_scenario(
             history,
@@ -167,3 +200,4 @@ class TestScenarioLabelling:
             history, {"forecast_status": "insufficient_history"}, uplift_pct=10.0
         )
         assert len(result.assumptions) >= 5
+
